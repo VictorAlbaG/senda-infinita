@@ -4,22 +4,35 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
+const authRoutes = require('./auth/auth.routes');
+const isAuth = require('./middleware/isAuth');
 
 const app = express();
 
-// 2. Middlewares globales
+// Middlewares globales
 // Permitir peticiones desde otros orígenes
 app.use(cors());
 
 // Permitir leer JSON en el body de las peticiones (req.body)
 app.use(express.json());
 
-// 3. Servir archivos estáticos desde /public
+// Servir archivos estáticos desde /public
 // __dirname aquí es /src, así que subimos un nivel (..) hasta la raíz y luego /public
 const publicPath = path.join(__dirname, '..', 'public');
 app.use(express.static(publicPath));
 
-// 4. Ruta de prueba (health check) para comprobar que la API responde
+// Rutas de autenticación
+app.use('/api/auth', authRoutes);
+
+// Ruta protegida de prueba
+app.get('/api/me', isAuth, (req, res) => {
+  res.json({
+    message: 'Usuario autenticado correctamente',
+    user: req.user,
+  });
+});
+
+// Ruta de prueba (health check) para comprobar que la API responde
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
@@ -27,7 +40,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// 5. Aquí más adelante añadiremos:
+// Aquí más adelante añadiremos:
 // app.use('/api/auth', authRoutes);
 // app.use('/api/routes', routesRoutes);
 // etc.
