@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Senda Infinita</title>
+</head>
+<body>
+  <h1>Senda Infinita</h1>
+  <p>Backend funcionando. Esta página viene de <code>/public/index.html</code>.</p>
+  <script>
+    // Llamada de prueba a la API para comprobar que Express funciona
+    fetch('/api/health')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Respuesta de /api/health:', data);
+      })
+      .catch((error) => {
+        console.error('Error al llamar a /api/health:', error);
+      });
+  </script>
+</body>
+</html>

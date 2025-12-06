@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ENUMS
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Difficulty {
+  EASY
+  MODERATE
+  HARD
+}
+
+enum RouteSource {
+  ORS
+  MANUAL
+  GPX
+}
+
+// MODELOS
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  name      String
+  role      Role      @default(USER)
+  createdAt DateTime  @default(now())
+
+  reviews   Review[]
+  favorites Favorite[]
+  photos    Photo[]
+}
+
+model Route {
+  id           Int          @id @default(autoincrement())
+  title        String
+  slug         String       @unique
+  description  String?
+  distanceKm   Float?
+  ascentM      Int?
+  difficulty   Difficulty
+  source       RouteSource
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  // Coordenadas
+  startLat     Float?
+  startLng     Float?
+  endLat       Float?
+  endLng       Float?
+
+  waypoints    Waypoint[]
+  reviews      Review[]
+  favorites    Favorite[]
+  photos       Photo[]
+}
+
+model Waypoint {
+  id        Int      @id @default(autoincrement())
+  routeId   Int
+  order     Int
+  lat       Float
+  lng       Float
+  elevation Int?
+
+  route     Route   @relation(fields: [routeId], references: [id])
+
+  @@index([routeId])
+  @@unique([routeId, order])
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  routeId   Int
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  user      User   @relation(fields: [userId], references: [id])
+  route     Route  @relation(fields: [routeId], references: [id])
+
+  @@index([userId])
+  @@index([routeId])
+  // Un usuario solo puede dejar una review por ruta
+  @@unique([userId, routeId])
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  routeId   Int
+  createdAt DateTime @default(now())
+
+  user      User   @relation(fields: [userId], references: [id])
+  route     Route  @relation(fields: [routeId], references: [id])
+
+  @@index([userId])
+  @@index([routeId])
+  // Un favorito por usuario y ruta
+  @@unique([userId, routeId])
+}
+
+model Photo {
+  id        Int      @id @default(autoincrement())
+  routeId   Int
+  userId    Int?
+  url       String
+  caption   String?
+  createdAt DateTime @default(now())
+
+  route     Route   @relation(fields: [routeId], references: [id])
+  user      User?   @relation(fields: [userId], references: [id])
+
+  @@index([routeId])
+  @@index([userId])
+}
