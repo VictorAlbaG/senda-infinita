@@ -6,6 +6,8 @@ const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./auth/auth.routes');
 const isAuth = require('./middleware/isAuth');
+const routesRoutes = require('./routes/routes.routes');
+
 
 const app = express();
 
@@ -23,6 +25,8 @@ app.use(express.static(publicPath));
 
 // Rutas de autenticación
 app.use('/api/auth', authRoutes);
+app.use('/api/routes', routesRoutes);
+
 
 // Ruta protegida de prueba
 app.get('/api/me', isAuth, (req, res) => {
