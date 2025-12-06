@@ -16,7 +16,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@prisma/client": "^7.1.0",
+    "@prisma/client": "^6.19.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
@@ -26,6 +26,6 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.11",
-    "prisma": "^7.1.0"
+    "prisma": "^6.19.0"
   }
 }
