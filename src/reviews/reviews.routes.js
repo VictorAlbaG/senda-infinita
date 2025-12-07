@@ -17,4 +17,18 @@ router.get(
   reviewsController.getRouteReviews
 );
 
+// Actualizar una review concreta (autor o ADMIN)
+router.patch(
+  '/reviews/:reviewId',
+  isAuth,
+  reviewsController.updateReview
+);
+
+// Eliminar una review concreta (autor o ADMIN)
+router.delete(
+  '/reviews/:reviewId',
+  isAuth,
+  reviewsController.deleteReview
+);
+
 module.exports = router;

@@ -115,7 +115,110 @@ async function getRouteReviews(req, res) {
   }
 }
 
+/**
+ * PATCH /api/reviews/:reviewId
+ * Solo puede editar el autor o un ADMIN.
+ */
+async function updateReview(req, res) {
+  try {
+    const reviewId = parseInt(req.params.reviewId, 10);
+    const { rating, comment } = req.body;
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    if (Number.isNaN(reviewId)) {
+      return res.status(400).json({ message: 'reviewId inválido' });
+    }
+
+    const review = await prisma.review.findUnique({
+      where: { id: reviewId },
+    });
+
+    if (!review) {
+      return res.status(404).json({ message: 'Review no encontrada' });
+    }
+
+    // Permitir solo autor o admin
+    if (review.userId !== userId && userRole !== 'ADMIN') {
+      return res.status(403).json({ message: 'No puedes editar esta review' });
+    }
+
+    const dataToUpdate = {};
+
+    if (rating !== undefined) {
+      const ratingNum = Number(rating);
+      if (
+        Number.isNaN(ratingNum) ||
+        ratingNum < 1 ||
+        ratingNum > 5
+      ) {
+        return res.status(400).json({
+          message: 'rating debe ser un número entre 1 y 5',
+        });
+      }
+      dataToUpdate.rating = ratingNum;
+    }
+
+    if (comment !== undefined) {
+      dataToUpdate.comment = comment;
+    }
+
+    const updated = await prisma.review.update({
+      where: { id: reviewId },
+      data: dataToUpdate,
+    });
+
+    return res.json({
+      message: 'Review actualizada correctamente',
+      review: updated,
+    });
+  } catch (error) {
+    console.error('Error en updateReview:', error);
+    return res.status(500).json({ message: 'Error al actualizar review' });
+  }
+}
+
+/**
+ * DELETE /api/reviews/:reviewId
+ * Solo puede borrar el autor o un ADMIN.
+ */
+async function deleteReview(req, res) {
+  try {
+    const reviewId = parseInt(req.params.reviewId, 10);
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    if (Number.isNaN(reviewId)) {
+      return res.status(400).json({ message: 'reviewId inválido' });
+    }
+
+    const review = await prisma.review.findUnique({
+      where: { id: reviewId },
+    });
+
+    if (!review) {
+      return res.status(404).json({ message: 'Review no encontrada' });
+    }
+
+    if (review.userId !== userId && userRole !== 'ADMIN') {
+      return res.status(403).json({ message: 'No puedes borrar esta review' });
+    }
+
+    await prisma.review.delete({
+      where: { id: reviewId },
+    });
+
+    return res.json({ message: 'Review eliminada correctamente' });
+  } catch (error) {
+    console.error('Error en deleteReview:', error);
+    return res.status(500).json({ message: 'Error al eliminar review' });
+  }
+}
+
 module.exports = {
   createReview,
   getRouteReviews,
+  updateReview,
+  deleteReview,
 };
+
