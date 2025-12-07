@@ -9,6 +9,7 @@ const isAuth = require('./middleware/isAuth');
 const routesRoutes = require('./routes/routes.routes');
 const favoritesRoutes = require('./favorites/favorites.routes');
 const reviewsRoutes = require('./reviews/reviews.routes');
+const photosRoutes = require('./photos/photos.routes');
 
 
 const app = express();
@@ -30,7 +31,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/routes', routesRoutes);
 app.use('/api', favoritesRoutes);
 app.use('/api', reviewsRoutes);
+app.use('/api', photosRoutes);
 
+// Servir archivos estáticos de /uploads
+const uploadsPath = path.join(__dirname, '..', 'uploads');
+app.use('/uploads', express.static(uploadsPath));
 
 // Ruta protegida de prueba
 app.get('/api/me', isAuth, (req, res) => {
