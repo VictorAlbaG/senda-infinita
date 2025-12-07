@@ -1,4 +1,5 @@
 const routesService = require('./routes.service');
+const orsService = require('./ors.service');
 
 /**
  * GET /api/routes
@@ -57,7 +58,86 @@ async function getRouteDetail(req, res) {
   }
 }
 
+async function importRouteFromORS(req, res) {
+  try {
+    const {
+      title,
+      description,
+      difficulty,
+      startLat,
+      startLng,
+      endLat,
+      endLng,
+    } = req.body;
+
+    if (!title || !difficulty || startLat == null || startLng == null || endLat == null || endLng == null) {
+      return res.status(400).json({
+        message: 'title, difficulty, startLat, startLng, endLat y endLng son obligatorios',
+      });
+    }
+
+    const allowedDifficulties = ['EASY', 'MODERATE', 'HARD'];
+    if (!allowedDifficulties.includes(difficulty)) {
+      return res.status(400).json({
+        message: `difficulty debe ser uno de: ${allowedDifficulties.join(', ')}`,
+      });
+    }
+
+    const parsedStartLat = Number(startLat);
+    const parsedStartLng = Number(startLng);
+    const parsedEndLat = Number(endLat);
+    const parsedEndLng = Number(endLng);
+
+    if (
+      Number.isNaN(parsedStartLat) ||
+      Number.isNaN(parsedStartLng) ||
+      Number.isNaN(parsedEndLat) ||
+      Number.isNaN(parsedEndLng)
+    ) {
+      return res.status(400).json({
+        message: 'startLat, startLng, endLat y endLng deben ser números',
+      });
+    }
+
+    const result = await orsService.importRouteFromORS({
+      title,
+      description: description || null,
+      difficulty,
+      startLat: parsedStartLat,
+      startLng: parsedStartLng,
+      endLat: parsedEndLat,
+      endLng: parsedEndLng,
+    });
+
+    if (!result.created) {
+      return res.status(200).json({
+        message: 'Ruta ya existía (slug repetido), no se ha creado una nueva',
+        route: result.route,
+        waypointsCreated: result.waypointsCreated,
+      });
+    }
+
+    return res.status(201).json({
+      message: 'Ruta importada correctamente desde ORS',
+      route: result.route,
+      waypointsCreated: result.waypointsCreated,
+    });
+  } catch (error) {
+    console.error('Error en importRouteFromORS:', error);
+
+    if (error.details) {
+      return res.status(502).json({
+        message: 'Error al llamar a OpenRouteService',
+        details: error.details,
+      });
+    }
+
+    return res.status(500).json({ message: 'Error al importar ruta desde ORS' });
+  }
+}
+
 module.exports = {
   getRoutes,
   getRouteDetail,
+  importRouteFromORS,
 };
