@@ -14,8 +14,8 @@ async function listRoutes({ q, difficulty, page = 1 }) {
 
   if (q) {
     where.OR = [
-      { title: { contains: q, mode: 'insensitive' } },
-      { description: { contains: q, mode: 'insensitive' } },
+      { title: { contains: q } },
+      { description: { contains: q } },
     ];
   }
 

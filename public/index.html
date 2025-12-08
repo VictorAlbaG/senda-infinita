@@ -2,21 +2,66 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Senda Infinita</title>
+  <title>Senda Infinita – Rutas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
-  <h1>Senda Infinita</h1>
-  <p>Backend funcionando. Esta página viene de <code>/public/index.html</code>.</p>
-  <script>
-    // Llamada de prueba a la API para comprobar que Express funciona
-    fetch('/api/health')
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Respuesta de /api/health:', data);
-      })
-      .catch((error) => {
-        console.error('Error al llamar a /api/health:', error);
-      });
-  </script>
+  <header>
+    <h1>Senda Infinita</h1>
+    <p>Descubre rutas de senderismo en Cantabria</p>
+  </header>
+
+  <section>
+    <h2>Buscar rutas</h2>
+    <form id="filters-form">
+      <div>
+        <label for="search">Buscar por nombre o descripción</label>
+        <input
+          type="text"
+          id="search"
+          name="q"
+          placeholder="Ej: Cabárceno, costa, bosque..."
+        />
+      </div>
+
+      <div>
+        <label for="difficulty">Dificultad</label>
+        <select id="difficulty" name="difficulty">
+          <option value="">Todas</option>
+          <option value="EASY">Fácil</option>
+          <option value="MODERATE">Moderada</option>
+          <option value="HARD">Difícil</option>
+        </select>
+      </div>
+
+      <button type="submit">Filtrar</button>
+    </form>
+  </section>
+
+  <section>
+    <p id="routes-status" aria-live="polite"></p>
+  </section>
+
+  <main>
+    <section>
+      <h2>Rutas</h2>
+      <div id="routes-container">
+        <!-- Aquí se insertarán las tarjetas desde main.js -->
+      </div>
+    </section>
+  </main>
+
+  <section id="pagination" style="margin-top: 1rem;">
+    <button id="prev-page" type="button">Anterior</button>
+    <span id="pagination-info"></span>
+    <button id="next-page" type="button">Siguiente</button>
+  </section>
+
+  <footer style="margin-top: 2rem;">
+    <a href="login.html">Iniciar sesión</a> ·
+    <a href="registro.html">Registrarse</a>
+  </footer>
+
+  <script src="js/main.js" defer></script>
 </body>
 </html>

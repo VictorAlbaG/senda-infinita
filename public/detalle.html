@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Detalle de ruta – Senda Infinita</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <style>
+    /* Solo lo básico para que el mapa se vea; el diseño bonito vendrá luego */
+    #map {
+      width: 100%;
+      height: 400px;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html">&larr; Volver a la lista</a>
+    <h1 id="route-title">Cargando ruta...</h1>
+    <p id="route-meta"></p>
+    <p id="route-description"></p>
+    <p id="route-rating"></p>
+  </header>
+
+  <main>
+    <!-- Mapa -->
+    <section>
+      <h2>Mapa</h2>
+      <div id="map"></div>
+      <p id="map-status"></p>
+    </section>
+
+    <!-- Botón favorito -->
+    <section>
+      <h2>Favorito</h2>
+      <button id="favorite-btn" type="button" disabled>
+        Inicia sesión para marcar como favorita
+      </button>
+      <p id="favorite-status"></p>
+    </section>
+
+    <!-- Fotos -->
+    <section>
+      <h2>Fotos de la ruta</h2>
+      <div id="photos-container"></div>
+
+      <form id="photo-form">
+        <h3>Subir una foto</h3>
+        <p id="photo-form-message"></p>
+        <input type="file" id="photo-input" name="photo" accept="image/*" />
+        <button type="submit">Subir foto</button>
+      </form>
+    </section>
+
+    <!-- Reviews -->
+    <section>
+      <h2>Opiniones</h2>
+      <div id="reviews-container"></div>
+      <p id="reviews-pagination-info"></p>
+      <button id="reviews-prev" type="button">Reviews anteriores</button>
+      <button id="reviews-next" type="button">Reviews siguientes</button>
+
+      <hr />
+
+      <form id="review-form">
+        <h3>Dejar una review</h3>
+        <p id="review-form-message"></p>
+
+        <label for="review-rating">Valoración (1–5)</label>
+        <input
+          type="number"
+          id="review-rating"
+          name="rating"
+          min="1"
+          max="5"
+          required
+        />
+
+        <label for="review-comment">Comentario</label>
+        <textarea
+          id="review-comment"
+          name="comment"
+          rows="3"
+          placeholder="¿Qué tal ha sido la ruta?"
+        ></textarea>
+
+        <button type="submit">Enviar review</button>
+      </form>
+    </section>
+  </main>
+
+  <footer style="margin-top: 2rem;">
+    <a href="login.html">Iniciar sesión</a> ·
+    <a href="registro.html">Registrarse</a>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script src="js/detalle.js" defer></script>
+</body>
+</html>
