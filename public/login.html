@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Iniciar sesión – Senda Infinita</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main>
+    <h1>Iniciar sesión</h1>
+
+    <form id="login-form">
+      <p id="login-message"></p>
+
+      <div>
+        <label for="login-email">Correo electrónico</label>
+        <input
+          type="email"
+          id="login-email"
+          name="email"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="login-password">Contraseña</label>
+        <input
+          type="password"
+          id="login-password"
+          name="password"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      <button type="submit">Entrar</button>
+    </form>
+
+    <p>
+      ¿No tienes cuenta?
+      <a href="registro.html">Regístrate</a>
+    </p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/layout.js" defer></script>
+  <script src="js/auth.js" defer></script>
+</body>
+</html>

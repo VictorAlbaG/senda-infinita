@@ -14,7 +14,6 @@
   />
 
   <style>
-    /* Solo lo básico para que el mapa se vea; el diseño bonito vendrá luego */
     #map {
       width: 100%;
       height: 400px;
@@ -23,6 +22,8 @@
   </style>
 </head>
 <body>
+  <div id="header-placeholder"></div>
+
   <header>
     <a href="index.html">&larr; Volver a la lista</a>
     <h1 id="route-title">Cargando ruta...</h1>
@@ -39,7 +40,7 @@
       <p id="map-status"></p>
     </section>
 
-    <!-- Botón favorito -->
+    <!-- Favorito -->
     <section>
       <h2>Favorito</h2>
       <button id="favorite-btn" type="button" disabled>
@@ -98,10 +99,7 @@
     </section>
   </main>
 
-  <footer style="margin-top: 2rem;">
-    <a href="login.html">Iniciar sesión</a> ·
-    <a href="registro.html">Registrarse</a>
-  </footer>
+  <div id="footer-placeholder"></div>
 
   <!-- Leaflet JS -->
   <script
@@ -110,6 +108,8 @@
     crossorigin=""
   ></script>
 
+  <script src="js/layout.js" defer></script>
+  <script src="js/auth.js" defer></script>
   <script src="js/detalle.js" defer></script>
 </body>
 </html>

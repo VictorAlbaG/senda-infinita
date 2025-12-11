@@ -1,5 +1,3 @@
-// public/js/detalle.js
-
 const API_BASE = '/api';
 
 let routeData = null;
