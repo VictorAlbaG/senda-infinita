@@ -31,4 +31,11 @@ router.delete(
   reviewsController.deleteReview
 );
 
+// Listar reviews del usuario autenticado
+router.get(
+  '/me/reviews',
+  isAuth,
+  reviewsController.getMyReviews
+);
+
 module.exports = router;

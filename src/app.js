@@ -1,4 +1,4 @@
-// 1. Cargar variables de entorno desde .env
+// Cargar variables de entorno desde .env
 require('dotenv').config();
 
 const path = require('path');
@@ -52,10 +52,5 @@ app.get('/api/health', (req, res) => {
     message: 'Senda Infinita API funcionando ✅',
   });
 });
-
-// Aquí más adelante añadiremos:
-// app.use('/api/auth', authRoutes);
-// app.use('/api/routes', routesRoutes);
-// etc.
 
 module.exports = app;

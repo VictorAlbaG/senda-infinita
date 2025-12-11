@@ -215,10 +215,49 @@ async function deleteReview(req, res) {
   }
 }
 
+/**
+ * GET /api/me/reviews
+ * Devuelve todas las reviews del usuario autenticado
+ * con información básica de la ruta.
+ */
+async function getMyReviews(req, res) {
+  try {
+    const userId = req.user.id;
+
+    const reviews = await prisma.review.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        route: {
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+          },
+        },
+      },
+    });
+
+    return res.json({
+      data: reviews.map((r) => ({
+        id: r.id,
+        rating: r.rating,
+        comment: r.comment,
+        createdAt: r.createdAt,
+        route: r.route,
+      })),
+    });
+  } catch (error) {
+    console.error('Error en getMyReviews:', error);
+    return res.status(500).json({ message: 'Error al obtener tus reviews' });
+  }
+}
+
 module.exports = {
   createReview,
   getRouteReviews,
   updateReview,
   deleteReview,
+  getMyReviews,
 };
 

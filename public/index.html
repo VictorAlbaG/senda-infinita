@@ -6,13 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
-  <header>
-    <h1>Senda Infinita</h1>
-    <p>Descubre rutas de senderismo en Cantabria</p>
-  </header>
+  <div id="header-placeholder"></div>
 
+  <!-- Hero + filtros -->
   <section>
-    <h2>Buscar rutas</h2>
+    <h1>Explora rutas en Cantabria</h1>
+    <p>Filtra por nombre, descripción o dificultad.</p>
+
     <form id="filters-form">
       <div>
         <label for="search">Buscar por nombre o descripción</label>
@@ -38,30 +38,32 @@
     </form>
   </section>
 
+  <!-- Estado de rutas -->
   <section>
     <p id="routes-status" aria-live="polite"></p>
   </section>
 
+  <!-- Listado de rutas -->
   <main>
     <section>
       <h2>Rutas</h2>
       <div id="routes-container">
-        <!-- Aquí se insertarán las tarjetas desde main.js -->
+        <!-- Tarjetas de rutas desde main.js -->
       </div>
     </section>
   </main>
 
+  <!-- Paginación -->
   <section id="pagination" style="margin-top: 1rem;">
     <button id="prev-page" type="button">Anterior</button>
     <span id="pagination-info"></span>
     <button id="next-page" type="button">Siguiente</button>
   </section>
 
-  <footer style="margin-top: 2rem;">
-    <a href="login.html">Iniciar sesión</a> ·
-    <a href="registro.html">Registrarse</a>
-  </footer>
+  <div id="footer-placeholder"></div>
 
+  <script src="js/layout.js" defer></script>
+  <script src="js/auth.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>
