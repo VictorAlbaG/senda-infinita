@@ -4,7 +4,7 @@ const slugify = require('../utils/slugify');
 const ORS_API_KEY = process.env.ORS_API_KEY;
 
 if (!ORS_API_KEY) {
-  console.warn('⚠️ ORS_API_KEY no está definida en .env. El import de rutas no funcionará.');
+  console.warn('ORS_API_KEY no está definida en .env. El import de rutas no funcionará.');
 }
 
 /**

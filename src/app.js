@@ -21,7 +21,7 @@ app.use(cors());
 // Permitir leer JSON en el body de las peticiones (req.body)
 app.use(express.json());
 
-// Servir archivos estáticos desde /public
+// Archivos estáticos desde /public
 // __dirname aquí es /src, así que subimos un nivel (..) hasta la raíz y luego /public
 const publicPath = path.join(__dirname, '..', 'public');
 app.use(express.static(publicPath));
@@ -33,9 +33,11 @@ app.use('/api', favoritesRoutes);
 app.use('/api', reviewsRoutes);
 app.use('/api', photosRoutes);
 
-// Servir archivos estáticos de /uploads
+// Archivos estáticos de /uploads
 const uploadsPath = path.join(__dirname, '..', 'uploads');
 app.use('/uploads', express.static(uploadsPath));
+
+
 
 // Ruta protegida de prueba
 app.get('/api/me', isAuth, (req, res) => {
