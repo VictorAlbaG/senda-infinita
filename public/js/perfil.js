@@ -1,5 +1,11 @@
 const API_BASE = '/api';
 
+let cachedReviews = [];
+let calendarOffset = 0;
+let calendarPrevBtn;
+let calendarNextBtn;
+let calendarMonthLabel;
+
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('token');
 
@@ -7,6 +13,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Si no estás logueado, te mandamos al login
     window.location.href = 'login.html';
     return;
+  }
+
+  calendarPrevBtn = document.getElementById('calendar-prev');
+  calendarNextBtn = document.getElementById('calendar-next');
+  calendarMonthLabel = document.getElementById('calendar-month');
+
+  if (calendarPrevBtn && calendarNextBtn) {
+    calendarPrevBtn.addEventListener('click', () => {
+      calendarOffset -= 1;
+      renderDiaryCalendar(cachedReviews);
+    });
+
+    calendarNextBtn.addEventListener('click', () => {
+      calendarOffset += 1;
+      renderDiaryCalendar(cachedReviews);
+    });
   }
 
   // Ya se ha ejecutado updateAuthUi() desde auth.js
@@ -38,9 +60,9 @@ async function loadProfileBasic() {
     const user = data.user || {};
 
     const el = document.getElementById('profile-basic');
-    el.textContent = `Nombre: ${user.name || '-'} · Email: ${
+    el.textContent = `Nombre: ${user.name || '-'} Email: ${
       user.email || '-'
-    } · Rol: ${user.role || 'USER'}`;
+    } Rol: ${user.role || 'USER'}`;
   } catch (error) {
     console.error('Error al cargar datos de perfil:', error);
     const el = document.getElementById('profile-basic');
@@ -67,16 +89,21 @@ async function loadFavorites() {
     container.innerHTML = '';
 
     if (favorites.length === 0) {
-      container.textContent = 'No tienes rutas favoritas todavía.';
+      container.textContent = 'No tienes rutas favoritas todav­a.';
       return;
     }
 
     const list = document.createElement('ul');
+    list.className = 'grid gap-3 sm:grid-cols-2';
 
     favorites.forEach((fav) => {
       const li = document.createElement('li');
+      li.className =
+        'rounded-xl border border-[#7C7C6B]/40 bg-[#A5B86C]/35 p-3 text-[#1E4C6D] shadow-sm';
       const route = fav.route;
       const link = document.createElement('a');
+      link.className =
+        'font-semibold text-[#1E4C6D] hover:text-[#8C6E4A]';
       link.href = `detalle.html?slug=${encodeURIComponent(route.slug)}`;
       link.textContent = route.title;
 
@@ -107,6 +134,8 @@ async function loadMyReviews() {
     const result = await response.json();
     const reviews = result.data || [];
 
+    cachedReviews = reviews;
+
     renderMyReviews(reviews);
     renderDiaryCalendar(reviews);
   } catch (error) {
@@ -121,23 +150,29 @@ function renderMyReviews(reviews) {
   container.innerHTML = '';
 
   if (reviews.length === 0) {
-    container.textContent = 'Todavía no has dejado ninguna review.';
+    container.textContent = 'Todaví­a no has dejado ninguna review.';
     return;
   }
 
   const list = document.createElement('ul');
+  list.className = 'space-y-3';
 
   reviews.forEach((r) => {
     const li = document.createElement('li');
+    li.className =
+      'rounded-xl border border-[#7C7C6B]/40 bg-[#A5B86C]/35 p-3 text-sm text-[#1E4C6D] shadow-sm';
     const route = r.route || {};
     const dateStr = new Date(r.createdAt).toLocaleString('es-ES');
 
     const link = document.createElement('a');
+    link.className =
+      'font-semibold text-[#1E4C6D] hover:text-[#8C6E4A]';
     link.href = `detalle.html?slug=${encodeURIComponent(route.slug)}`;
     link.textContent = route.title || '(ruta desconocida)';
 
     const text = document.createElement('span');
-    text.textContent = ` · ⭐ ${r.rating}/5 · ${dateStr}`;
+    text.className = 'text-[#1E4C6D]/80';
+    text.textContent = ` £ ? ${r.rating}/5 £ ${dateStr}`;
 
     li.appendChild(link);
     li.appendChild(text);
@@ -153,13 +188,7 @@ function renderDiaryCalendar(reviews) {
   const container = document.getElementById('calendar-container');
   container.innerHTML = '';
 
-  if (reviews.length === 0) {
-    container.textContent =
-      'Cuando empieces a dejar reviews, verás aquí un calendario con tus días de actividad.';
-    return;
-  }
-
-  // Agrupar reviews por día (YYYY-MM-DD)
+  // Agrupar reviews por d­a (YYYY-MM-DD)
   const activityByDay = {};
   reviews.forEach((r) => {
     const date = new Date(r.createdAt);
@@ -167,22 +196,27 @@ function renderDiaryCalendar(reviews) {
     activityByDay[dayKey] = (activityByDay[dayKey] || 0) + 1;
   });
 
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth(); // 0-11
+  const today = new Date();
+  const viewDate = new Date(today.getFullYear(), today.getMonth() + calendarOffset, 1);
+  const year = viewDate.getFullYear();
+  const month = viewDate.getMonth(); // 0-11
+  const monthName = viewDate.toLocaleString('es-ES', { month: 'long' });
 
-  const monthName = now.toLocaleString('es-ES', { month: 'long' });
-
-  const title = document.createElement('h3');
-  title.textContent = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}`;
-  container.appendChild(title);
+  if (calendarMonthLabel) {
+    calendarMonthLabel.textContent = `${
+      monthName.charAt(0).toUpperCase() + monthName.slice(1)
+    } ${year}`;
+  }
 
   const table = document.createElement('table');
+  table.className = 'mt-3 w-full border-collapse text-sm';
   const headerRow = document.createElement('tr');
   const weekDays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 
   weekDays.forEach((d) => {
     const th = document.createElement('th');
+    th.className =
+      'border border-[#7C7C6B]/50 bg-[#1E4C6D] px-2 py-2 text-center font-semibold text-[#A7D3E6]';
     th.textContent = d;
     headerRow.appendChild(th);
   });
@@ -191,7 +225,7 @@ function renderDiaryCalendar(reviews) {
 
   // Primer día del mes (0 = domingo, 1 = lunes, etc.)
   const firstDay = new Date(year, month, 1);
-  let startIndex = firstDay.getDay(); // 0 (domingo) - 6 (sábado)
+  let startIndex = firstDay.getDay(); // 0 (domingo) - 6 (sÿbado)
 
   // Queremos que la semana empiece en lunes
   // Convertimos: domingo=6, lunes=0, martes=1, ...
@@ -201,9 +235,12 @@ function renderDiaryCalendar(reviews) {
 
   let currentRow = document.createElement('tr');
 
-  // Celdas vacías antes del primer día
+  // Celdas vací­as antes del primer dí­a
   for (let i = 0; i < startIndex; i++) {
-    currentRow.appendChild(document.createElement('td'));
+    const emptyTd = document.createElement('td');
+    emptyTd.className =
+      'border border-[#7C7C6B]/40 bg-[#A5B86C]/15 px-2 py-2 text-center text-[#1E4C6D]';
+    currentRow.appendChild(emptyTd);
   }
 
   for (let day = 1; day <= daysInMonth; day++) {
@@ -213,33 +250,46 @@ function renderDiaryCalendar(reviews) {
     }
 
     const td = document.createElement('td');
+    td.className =
+      'border border-[#7C7C6B]/40 bg-[#A7D3E6]/80 px-2 py-2 text-center text-[#1E4C6D]';
     td.textContent = String(day);
 
     const dateKey = toDateKey(year, month, day);
     const count = activityByDay[dateKey];
 
     if (count) {
-      // Marcamos los días
-      td.style.backgroundColor = '#cce5ff';
-      td.title = `${count} review(s) este día`;
+      // Marcamos los dí­as
+      td.classList.add('bg-[#6BAA3D]/70', 'font-semibold');
+      td.title = `${count} review(s) este dí­a`;
     }
 
     currentRow.appendChild(td);
   }
 
-  // Rellenar resto de la fila final con celdas vacías
+  // Rellenar resto de la fila final con celdas vací­as
   while (currentRow.children.length < 7) {
-    currentRow.appendChild(document.createElement('td'));
+    const emptyTd = document.createElement('td');
+    emptyTd.className =
+      'border border-[#7C7C6B]/40 bg-[#A5B86C]/15 px-2 py-2 text-center text-[#1E4C6D]';
+    currentRow.appendChild(emptyTd);
   }
 
   table.appendChild(currentRow);
-
   container.appendChild(table);
 
   const legend = document.createElement('p');
+  legend.className = 'mt-3 text-sm text-[#1E4C6D]/70';
   legend.textContent =
-    'Los días en azul indican que has dejado al menos una review en esa fecha.';
+    'Los dí­as en verde indican que has dejado al menos una review en esa fecha.';
   container.appendChild(legend);
+
+  if (reviews.length === 0) {
+    const emptyNote = document.createElement('p');
+    emptyNote.className = 'mt-2 text-sm text-[#1E4C6D]/70';
+    emptyNote.textContent =
+      'Aún no tienes reviews.';
+    container.appendChild(emptyNote);
+  }
 }
 
 function toDateKey(year, month, day) {

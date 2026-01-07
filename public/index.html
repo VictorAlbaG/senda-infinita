@@ -2,68 +2,287 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Senda Infinita – Rutas</title>
+  <title>Senda Infinita - Rutas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="/css/app.css">
+  <style>
+    #header-placeholder {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-12px);
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+    body.header-visible #header-placeholder {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    #hero {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #hero-image {
+      position: absolute;
+      inset: 0;
+      background: url('/media/hero-paisaje.jpg') center / cover no-repeat;
+      transition: opacity 200ms ease;
+    }
+    #hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.35) 0%,
+        rgba(0, 0, 0, 0.55) 70%,
+        rgba(0, 0, 0, 0.65) 100%
+      );
+    }
+    #hero-title {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    #tree-layer {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 6vw 6vh;
+      pointer-events: none;
+    }
+    .tree {
+      width: 72px;
+      height: 110px;
+      opacity: 0.45;
+    }
+    .tree-shadow {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      --tree-x: 0vw;
+      --tree-y: 0vh;
+      --tree-scale: 1;
+      transform: translate(calc(-50% + var(--tree-x)), calc(-1 * var(--tree-y)))
+        scale(var(--tree-scale));
+      transform-origin: bottom center;
+      transition: transform 80ms linear, opacity 120ms linear;
+    }
+    #home-content {
+      position: relative;
+      z-index: 1;
+      padding-top: 96px;
+    }
+    @media (max-width: 640px) {
+      .tree {
+        width: 56px;
+        height: 86px;
+      }
+      #home-content {
+        padding-top: 80px;
+      }
+    }
+  </style>
 </head>
-<body>
+<body class="min-h-screen bg-[linear-gradient(135deg,_#A7D3E6_0%,_#A5B86C_50%,_#6BAA3D_100%)] text-[#1E4C6D]">
   <div id="header-placeholder"></div>
 
-  <!-- Hero + filtros -->
-  <section>
-    <h1>Explora rutas en Cantabria</h1>
-    <p>Filtra por nombre, descripción o dificultad.</p>
+  <section id="hero-scene" style="height: 200vh;">
+    <div id="hero">
+      <div id="hero-image"></div>
+      <div id="hero-overlay"></div>
 
-    <form id="filters-form">
-      <div>
-        <label for="search">Buscar por nombre o descripción</label>
-        <input
-          type="text"
-          id="search"
-          name="q"
-          placeholder="Ej: Cabárceno, costa, bosque..."
-        />
+      <div style="position: relative; height: 100%; display: flex; align-items: center; justify-content: center;">
+        <div style="text-align: center; color: #ffffff; padding: 0 24px;">
+          <div style="font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase;">Cantabria</div>
+          <h1 id="hero-title">Senda Infinita</h1>
+          <p id="hero-subtitle" style="margin-top: 12px; font-size: 1.05rem; max-width: 560px;">
+            Rutas y paisajes sin fin para explorar a tu ritmo.
+          </p>
+        </div>
       </div>
 
-      <div>
-        <label for="difficulty">Dificultad</label>
-        <select id="difficulty" name="difficulty">
-          <option value="">Todas</option>
-          <option value="EASY">Fácil</option>
-          <option value="MODERATE">Moderada</option>
-          <option value="HARD">Difícil</option>
-        </select>
-      </div>
+      <div id="tree-layer">
+        <svg class="tree tree-shadow" data-side="left" data-offset="4" data-rise="1" style="--tree-scale: 1.2" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 6 56 48 4 48" fill="#0f172a" />
+          <rect x="25" y="48" width="10" height="30" fill="#0f172a" />
+        </svg>
+        <svg class="tree tree-shadow" data-side="right" data-offset="4" data-rise="1" style="--tree-scale: 1.2" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 6 56 48 4 48" fill="#0f172a" />
+          <rect x="25" y="48" width="10" height="30" fill="#0f172a" />
+        </svg>
 
-      <button type="submit">Filtrar</button>
-    </form>
+        <svg class="tree tree-shadow" data-side="left" data-offset="8" data-rise="3" style="--tree-scale: 1.15" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 8 52 44 8 44" fill="#0f172a" />
+          <polygon points="30 22 50 56 10 56" fill="#0f172a" />
+          <rect x="25" y="56" width="10" height="26" fill="#0f172a" />
+        </svg>
+        <svg class="tree tree-shadow" data-side="right" data-offset="8" data-rise="3" style="--tree-scale: 1.15" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 8 52 44 8 44" fill="#0f172a" />
+          <polygon points="30 22 50 56 10 56" fill="#0f172a" />
+          <rect x="25" y="56" width="10" height="26" fill="#0f172a" />
+        </svg>
+
+        <svg class="tree tree-shadow" data-side="left" data-offset="12" data-rise="5" style="--tree-scale: 1.1" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 6 54 42 6 42" fill="#0f172a" />
+          <polygon points="30 18 52 50 8 50" fill="#0f172a" />
+          <polygon points="30 30 50 60 10 60" fill="#0f172a" />
+          <rect x="25" y="60" width="10" height="22" fill="#0f172a" />
+        </svg>
+        <svg class="tree tree-shadow" data-side="right" data-offset="12" data-rise="5" style="--tree-scale: 1.1" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 6 54 42 6 42" fill="#0f172a" />
+          <polygon points="30 18 52 50 8 50" fill="#0f172a" />
+          <polygon points="30 30 50 60 10 60" fill="#0f172a" />
+          <rect x="25" y="60" width="10" height="22" fill="#0f172a" />
+        </svg>
+
+        <svg class="tree tree-shadow" data-side="left" data-offset="18" data-rise="8" style="--tree-scale: 1.05" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 10 50 42 10 42" fill="#0f172a" />
+          <polygon points="30 24 50 58 10 58" fill="#0f172a" />
+          <rect x="25" y="58" width="10" height="24" fill="#0f172a" />
+        </svg>
+        <svg class="tree tree-shadow" data-side="right" data-offset="18" data-rise="8" style="--tree-scale: 1.05" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 10 50 42 10 42" fill="#0f172a" />
+          <polygon points="30 24 50 58 10 58" fill="#0f172a" />
+          <rect x="25" y="58" width="10" height="24" fill="#0f172a" />
+        </svg>
+
+        <svg class="tree tree-shadow" data-side="left" data-offset="24" data-rise="11" style="--tree-scale: 1" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 8 52 44 8 44" fill="#0f172a" />
+          <polygon points="30 22 50 56 10 56" fill="#0f172a" />
+          <rect x="25" y="56" width="10" height="26" fill="#0f172a" />
+        </svg>
+        <svg class="tree tree-shadow" data-side="right" data-offset="24" data-rise="11" style="--tree-scale: 1" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 8 52 44 8 44" fill="#0f172a" />
+          <polygon points="30 22 50 56 10 56" fill="#0f172a" />
+          <rect x="25" y="56" width="10" height="26" fill="#0f172a" />
+        </svg>
+
+        <svg class="tree tree-shadow" data-side="left" data-offset="30" data-rise="15" style="--tree-scale: 0.95" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 6 54 42 6 42" fill="#0f172a" />
+          <polygon points="30 18 52 50 8 50" fill="#0f172a" />
+          <polygon points="30 30 50 60 10 60" fill="#0f172a" />
+          <rect x="25" y="60" width="10" height="22" fill="#0f172a" />
+        </svg>
+        <svg class="tree tree-shadow" data-side="right" data-offset="30" data-rise="15" style="--tree-scale: 0.95" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 6 54 42 6 42" fill="#0f172a" />
+          <polygon points="30 18 52 50 8 50" fill="#0f172a" />
+          <polygon points="30 30 50 60 10 60" fill="#0f172a" />
+          <rect x="25" y="60" width="10" height="22" fill="#0f172a" />
+        </svg>
+
+        <svg class="tree tree-shadow" data-side="left" data-offset="36" data-rise="19" style="--tree-scale: 0.9" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 10 50 42 10 42" fill="#0f172a" />
+          <polygon points="30 24 50 58 10 58" fill="#0f172a" />
+          <rect x="25" y="58" width="10" height="24" fill="#0f172a" />
+        </svg>
+        <svg class="tree tree-shadow" data-side="right" data-offset="36" data-rise="19" style="--tree-scale: 0.9" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 10 50 42 10 42" fill="#0f172a" />
+          <polygon points="30 24 50 58 10 58" fill="#0f172a" />
+          <rect x="25" y="58" width="10" height="24" fill="#0f172a" />
+        </svg>
+
+        <svg class="tree tree-shadow" data-side="left" data-offset="42" data-rise="22" style="--tree-scale: 0.85" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 8 52 44 8 44" fill="#0f172a" />
+          <polygon points="30 22 50 56 10 56" fill="#0f172a" />
+          <rect x="25" y="56" width="10" height="26" fill="#0f172a" />
+        </svg>
+        <svg class="tree tree-shadow" data-side="right" data-offset="42" data-rise="22" style="--tree-scale: 0.85" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 8 52 44 8 44" fill="#0f172a" />
+          <polygon points="30 22 50 56 10 56" fill="#0f172a" />
+          <rect x="25" y="56" width="10" height="26" fill="#0f172a" />
+        </svg>
+
+        <svg class="tree tree-shadow" data-side="left" data-offset="48" data-rise="24" style="--tree-scale: 0.8" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 6 54 42 6 42" fill="#0f172a" />
+          <polygon points="30 18 52 50 8 50" fill="#0f172a" />
+          <polygon points="30 30 50 60 10 60" fill="#0f172a" />
+          <rect x="25" y="60" width="10" height="22" fill="#0f172a" />
+        </svg>
+        <svg class="tree tree-shadow" data-side="right" data-offset="48" data-rise="24" style="--tree-scale: 0.8" viewBox="0 0 60 90" aria-hidden="true">
+          <polygon points="30 6 54 42 6 42" fill="#0f172a" />
+          <polygon points="30 18 52 50 8 50" fill="#0f172a" />
+          <polygon points="30 30 50 60 10 60" fill="#0f172a" />
+          <rect x="25" y="60" width="10" height="22" fill="#0f172a" />
+        </svg>
+      </div>
+    </div>
   </section>
 
-  <!-- Estado de rutas -->
-  <section>
-    <p id="routes-status" aria-live="polite"></p>
-  </section>
+  <div id="home-content" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Hero + filtros -->
+    <section class="rounded-2xl border border-[#7C7C6B]/40 bg-[#A7D3E6]/70 p-6 shadow-sm sm:p-8">
+      <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Explora rutas en Cantabria</h1>
+      <p class="mt-2 text-[#1E4C6D]/80">Filtra por nombre, descripción o dificultad.</p>
 
-  <!-- Listado de rutas -->
-  <main>
-    <section>
-      <h2>Rutas</h2>
-      <div id="routes-container">
-        <!-- Tarjetas de rutas desde main.js -->
-      </div>
+      <form id="filters-form" class="mt-6 grid items-end gap-4 sm:grid-cols-[2fr_1fr_auto]">
+        <div>
+          <label for="search" class="block text-sm font-medium text-[#1E4C6D]">Buscar por nombre o descripción</label>
+          <input
+            type="text"
+            id="search"
+            name="q"
+            placeholder="Ej: Cab˜rceno, costa, bosque..."
+            class="mt-1 w-full rounded-lg border border-[#7C7C6B]/60 bg-[#A7D3E6]/70 px-3 py-2 text-[#1E4C6D] shadow-sm placeholder:text-[#7C7C6B] focus:border-[#6BAA3D] focus:outline-none focus:ring-2 focus:ring-[#6BAA3D]/40"
+          />
+        </div>
+
+        <div>
+          <label for="difficulty" class="block text-sm font-medium text-[#1E4C6D]">Dificultad</label>
+          <select id="difficulty" name="difficulty" class="mt-1 w-full rounded-lg border border-[#7C7C6B]/60 bg-[#A7D3E6]/70 px-3 py-2 text-[#1E4C6D] shadow-sm focus:border-[#6BAA3D] focus:outline-none focus:ring-2 focus:ring-[#6BAA3D]/40">
+            <option value="">Todas</option>
+            <option value="EASY">Fácil</option>
+            <option value="MODERATE">Moderada</option>
+            <option value="HARD">Difí­cil</option>
+          </select>
+        </div>
+
+        <button type="submit" class="mt-2 inline-flex items-center justify-center rounded-lg bg-[#1E4C6D] px-4 py-2 text-sm font-semibold text-[#A7D3E6] shadow hover:bg-[#8C6E4A] focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/40 sm:mt-0">
+          Filtrar
+        </button>
+      </form>
     </section>
-  </main>
 
-  <!-- Paginación -->
-  <section id="pagination" style="margin-top: 1rem;">
-    <button id="prev-page" type="button">Anterior</button>
-    <span id="pagination-info"></span>
-    <button id="next-page" type="button">Siguiente</button>
-  </section>
+    <!-- Estado de rutas -->
+    <section class="py-4">
+      <p id="routes-status" class="text-sm text-[#1E4C6D]/70" aria-live="polite"></p>
+    </section>
+
+    <!-- Listado de rutas -->
+    <main class="py-4">
+      <section class="rounded-2xl border border-[#7C7C6B]/40 bg-[#A5B86C]/50 p-6 shadow-sm">
+        <h2 class="text-2xl font-semibold">Rutas</h2>
+        <div id="routes-container" class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <!-- Tarjetas de rutas desde main.js -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Paginación -->
+    <section id="pagination" class="mt-6 flex items-center justify-center gap-4">
+      <button id="prev-page" type="button" class="inline-flex items-center justify-center rounded-lg border border-[#1E4C6D]/60 bg-[#A7D3E6]/70 px-3 py-2 text-sm font-medium text-[#1E4C6D] shadow-sm hover:bg-[#A5B86C]/70 focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/30">
+        Anterior
+      </button>
+      <span id="pagination-info" class="text-sm text-[#1E4C6D]/80"></span>
+      <button id="next-page" type="button" class="inline-flex items-center justify-center rounded-lg border border-[#1E4C6D]/60 bg-[#A7D3E6]/70 px-3 py-2 text-sm font-medium text-[#1E4C6D] shadow-sm hover:bg-[#A5B86C]/70 focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/30">
+        Siguiente
+      </button>
+    </section>
+  </div>
 
   <div id="footer-placeholder"></div>
 
   <script src="js/layout.js" defer></script>
   <script src="js/auth.js" defer></script>
+  <script src="js/hero.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>

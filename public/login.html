@@ -2,47 +2,53 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Iniciar sesión – Senda Infinita</title>
+  <title>Iniciar sesión - Senda Infinita</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="/css/app.css">
 </head>
-<body>
+<body class="min-h-screen bg-[linear-gradient(135deg,_#A7D3E6_0%,_#A5B86C_50%,_#6BAA3D_100%)] text-[#1E4C6D]">
   <div id="header-placeholder"></div>
 
-  <main>
-    <h1>Iniciar sesión</h1>
+  <main class="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="rounded-2xl border border-[#7C7C6B]/40 bg-[#A7D3E6]/80 p-6 shadow-sm">
+      <h1 class="text-2xl font-semibold">Iniciar sesión</h1>
 
-    <form id="login-form">
-      <p id="login-message"></p>
+      <form id="login-form" class="mt-6 space-y-4">
+        <p id="login-message" class="text-sm text-[#1E4C6D]/70"></p>
 
-      <div>
-        <label for="login-email">Correo electrónico</label>
-        <input
-          type="email"
-          id="login-email"
-          name="email"
-          autocomplete="email"
-          required
-        />
-      </div>
+        <div>
+          <label for="login-email" class="block text-sm font-medium text-[#1E4C6D]">Correo electrónico</label>
+          <input
+            type="email"
+            id="login-email"
+            name="email"
+            autocomplete="email"
+            required
+            class="mt-1 w-full rounded-lg border border-[#7C7C6B]/60 bg-[#A7D3E6]/70 px-3 py-2 text-[#1E4C6D] shadow-sm focus:border-[#6BAA3D] focus:outline-none focus:ring-2 focus:ring-[#6BAA3D]/40"
+          />
+        </div>
 
-      <div>
-        <label for="login-password">Contraseña</label>
-        <input
-          type="password"
-          id="login-password"
-          name="password"
-          autocomplete="current-password"
-          required
-        />
-      </div>
+        <div>
+          <label for="login-password" class="block text-sm font-medium text-[#1E4C6D]">Contraseña</label>
+          <input
+            type="password"
+            id="login-password"
+            name="password"
+            autocomplete="current-password"
+            required
+            class="mt-1 w-full rounded-lg border border-[#7C7C6B]/60 bg-[#A7D3E6]/70 px-3 py-2 text-[#1E4C6D] shadow-sm focus:border-[#6BAA3D] focus:outline-none focus:ring-2 focus:ring-[#6BAA3D]/40"
+          />
+        </div>
 
-      <button type="submit">Entrar</button>
-    </form>
+        <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-[#1E4C6D] px-4 py-2 text-sm font-semibold text-[#A7D3E6] shadow hover:bg-[#8C6E4A] focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/40">Entrar</button>
+      </form>
 
-    <p>
-      ¿No tienes cuenta?
-      <a href="registro.html">Regístrate</a>
-    </p>
+      <p class="mt-5 text-sm text-[#1E4C6D]/80">
+        ¿No tienes cuenta?
+        <a href="registro.html" class="font-semibold text-[#1E4C6D] hover:text-[#8C6E4A]">Regístrate</a>
+      </p>
+    </div>
   </main>
 
   <div id="footer-placeholder"></div>

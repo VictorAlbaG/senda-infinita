@@ -10,6 +10,7 @@ const routesRoutes = require('./routes/routes.routes');
 const favoritesRoutes = require('./favorites/favorites.routes');
 const reviewsRoutes = require('./reviews/reviews.routes');
 const photosRoutes = require('./photos/photos.routes');
+const adminRoutes = require('./admin/admin.routes');
 
 
 const app = express();
@@ -21,7 +22,7 @@ app.use(cors());
 // Permitir leer JSON en el body de las peticiones (req.body)
 app.use(express.json());
 
-// Archivos estáticos desde /public
+// Archivos est ticos desde /public
 // __dirname aquí es /src, así que subimos un nivel (..) hasta la raíz y luego /public
 const publicPath = path.join(__dirname, '..', 'public');
 app.use(express.static(publicPath));
@@ -32,6 +33,7 @@ app.use('/api/routes', routesRoutes);
 app.use('/api', favoritesRoutes);
 app.use('/api', reviewsRoutes);
 app.use('/api', photosRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Archivos estáticos de /uploads
 const uploadsPath = path.join(__dirname, '..', 'uploads');
@@ -51,7 +53,7 @@ app.get('/api/me', isAuth, (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
-    message: 'Senda Infinita API funcionando ✅',
+    message: 'Senda Infinita API funcionando ?',
   });
 });
 

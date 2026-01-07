@@ -1,0 +1,4 @@
+@import "tailwindcss";
+
+/* Tailwind escanea las clases aquí (HTML + JS del front) */
+@source "../public/**/*.{html,js}";
