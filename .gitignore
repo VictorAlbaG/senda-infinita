@@ -1,20 +1,32 @@
-# Dependencias
-node_modules
-
-# Variables de entorno
-.env
-
-# Logs
+# Node
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
-# macOS / Windows basura
+# Env
+.env
+.env.*.local
+
+# Build/Cache
+dist/
+build/
+.cache/
+.tmp/
+
+# Prisma
+prisma/.env
+prisma/dev.db
+prisma/dev.db-journal
+
+# Logs
+logs/
+*.log
+
+# OS
 .DS_Store
 Thumbs.db
 
-# Prisma
-.prisma
-
-# Editor
-.vscode
+# Uploads (si no quieres versionar archivos subidos)
+uploads/
