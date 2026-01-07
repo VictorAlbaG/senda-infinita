@@ -2,8 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Detalle de ruta – Senda Infinita</title>
+  <title>Detalle de ruta - Senda Infinita</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="/css/app.css">
 
   <!-- Leaflet CSS -->
   <link
@@ -21,83 +23,89 @@
     }
   </style>
 </head>
-<body>
+<body class="min-h-screen bg-[linear-gradient(135deg,_#A7D3E6_0%,_#A5B86C_50%,_#6BAA3D_100%)] text-[#1E4C6D]">
   <div id="header-placeholder"></div>
 
-  <header>
-    <a href="index.html">&larr; Volver a la lista</a>
-    <h1 id="route-title">Cargando ruta...</h1>
-    <p id="route-meta"></p>
-    <p id="route-description"></p>
-    <p id="route-rating"></p>
-  </header>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <header class="rounded-2xl border border-[#7C7C6B]/40 bg-[#A7D3E6]/70 p-6 shadow-sm">
+      <a href="index.html" class="text-sm font-medium text-[#1E4C6D] hover:text-[#8C6E4A]">&larr; Volver a la lista</a>
+      <h1 id="route-title" class="mt-2 text-3xl font-semibold">Cargando ruta...</h1>
+      <p id="route-meta" class="mt-2 text-[#1E4C6D]/80"></p>
+      <p id="route-description" class="mt-2 text-[#1E4C6D]/80"></p>
+      <p id="route-rating" class="mt-2 text-[#1E4C6D]/80"></p>
+    </header>
 
-  <main>
-    <!-- Mapa -->
-    <section>
-      <h2>Mapa</h2>
-      <div id="map"></div>
-      <p id="map-status"></p>
-    </section>
+    <main class="grid gap-6">
+      <!-- Mapa -->
+      <section class="rounded-2xl border border-[#7C7C6B]/40 bg-[#A5B86C]/45 p-6 shadow-sm">
+        <h2 class="text-xl font-semibold">Mapa</h2>
+        <div id="map" class="mt-4 rounded-xl border border-[#7C7C6B]/60 shadow-sm"></div>
+        <p id="map-status" class="text-sm text-[#1E4C6D]/70"></p>
+      </section>
 
-    <!-- Favorito -->
-    <section>
-      <h2>Favorito</h2>
-      <button id="favorite-btn" type="button" disabled>
-        Inicia sesión para marcar como favorita
-      </button>
-      <p id="favorite-status"></p>
-    </section>
+      <!-- Favorito -->
+      <section class="rounded-2xl border border-[#7C7C6B]/40 bg-[#A7D3E6]/70 p-6 shadow-sm">
+        <h2 class="text-xl font-semibold">Favorito</h2>
+        <button id="favorite-btn" type="button" class="mt-3 inline-flex items-center justify-center rounded-lg bg-[#1E4C6D] px-4 py-2 text-sm font-semibold text-[#A7D3E6] shadow hover:bg-[#6BAA3D] focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/40" disabled>
+          Inicia sesión para marcar como favorita
+        </button>
+        <p id="favorite-status" class="mt-2 text-sm text-[#1E4C6D]/70"></p>
+      </section>
 
-    <!-- Fotos -->
-    <section>
-      <h2>Fotos de la ruta</h2>
-      <div id="photos-container"></div>
+      <!-- Fotos -->
+      <section class="rounded-2xl border border-[#7C7C6B]/40 bg-[#A5B86C]/45 p-6 shadow-sm">
+        <h2 class="text-xl font-semibold">Fotos de la ruta</h2>
+        <div id="photos-container" class="mt-4 grid gap-4 sm:grid-cols-2"></div>
 
-      <form id="photo-form">
-        <h3>Subir una foto</h3>
-        <p id="photo-form-message"></p>
-        <input type="file" id="photo-input" name="photo" accept="image/*" />
-        <button type="submit">Subir foto</button>
-      </form>
-    </section>
+        <form id="photo-form" class="mt-6 rounded-xl border border-[#7C7C6B]/40 bg-[#A7D3E6]/70 p-4">
+          <h3 class="text-lg font-semibold">Subir una foto</h3>
+          <p id="photo-form-message" class="mt-1 text-sm text-[#1E4C6D]/70"></p>
+          <input type="file" id="photo-input" name="photo" accept="image/*" class="mt-3 w-full rounded-lg border border-[#7C7C6B]/60 bg-[#A7D3E6]/70 px-3 py-2 text-sm text-[#1E4C6D]" />
+          <button type="submit" class="mt-3 inline-flex items-center justify-center rounded-lg bg-[#1E4C6D] px-4 py-2 text-sm font-semibold text-[#A7D3E6] shadow hover:bg-[#8C6E4A] focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/40">Subir foto</button>
+        </form>
+      </section>
 
-    <!-- Reviews -->
-    <section>
-      <h2>Opiniones</h2>
-      <div id="reviews-container"></div>
-      <p id="reviews-pagination-info"></p>
-      <button id="reviews-prev" type="button">Reviews anteriores</button>
-      <button id="reviews-next" type="button">Reviews siguientes</button>
+      <!-- Reviews -->
+      <section class="rounded-2xl border border-[#7C7C6B]/40 bg-[#A7D3E6]/70 p-6 shadow-sm">
+        <h2 class="text-xl font-semibold">Opiniones</h2>
+        <div id="reviews-container" class="mt-4 space-y-3"></div>
+        <p id="reviews-pagination-info" class="mt-2 text-sm text-[#1E4C6D]/70"></p>
+        <div class="mt-3 flex flex-wrap gap-3">
+          <button id="reviews-prev" type="button" class="inline-flex items-center justify-center rounded-lg border border-[#1E4C6D]/60 bg-[#A7D3E6]/70 px-3 py-2 text-sm font-medium text-[#1E4C6D] shadow-sm hover:bg-[#A5B86C]/70 focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/30">Reviews anteriores</button>
+          <button id="reviews-next" type="button" class="inline-flex items-center justify-center rounded-lg border border-[#1E4C6D]/60 bg-[#A7D3E6]/70 px-3 py-2 text-sm font-medium text-[#1E4C6D] shadow-sm hover:bg-[#A5B86C]/70 focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/30">Reviews siguientes</button>
+        </div>
 
-      <hr />
+        <hr class="my-6 border-[#7C7C6B]/40" />
 
-      <form id="review-form">
-        <h3>Dejar una review</h3>
-        <p id="review-form-message"></p>
+        <form id="review-form" class="rounded-xl border border-[#7C7C6B]/40 bg-[#A5B86C]/45 p-4">
+          <h3 class="text-lg font-semibold">Dejar una review</h3>
+          <p id="review-form-message" class="mt-1 text-sm text-[#1E4C6D]/70"></p>
 
-        <label for="review-rating">Valoración (1–5)</label>
-        <input
-          type="number"
-          id="review-rating"
-          name="rating"
-          min="1"
-          max="5"
-          required
-        />
+          <label for="review-rating" class="mt-4 block text-sm font-medium text-[#1E4C6D]">Valoración (1-5)</label>
+          <input
+            type="number"
+            id="review-rating"
+            name="rating"
+            min="1"
+            max="5"
+            required
+            class="mt-1 w-full rounded-lg border border-[#7C7C6B]/60 bg-[#A7D3E6]/70 px-3 py-2 text-[#1E4C6D] shadow-sm focus:border-[#6BAA3D] focus:outline-none focus:ring-2 focus:ring-[#6BAA3D]/40"
+          />
 
-        <label for="review-comment">Comentario</label>
-        <textarea
-          id="review-comment"
-          name="comment"
-          rows="3"
-          placeholder="¿Qué tal ha sido la ruta?"
-        ></textarea>
+          <label for="review-comment" class="mt-4 block text-sm font-medium text-[#1E4C6D]">Comentario</label>
+          <textarea
+            id="review-comment"
+            name="comment"
+            rows="3"
+            placeholder="¨Qu‚ tal ha sido la ruta?"
+            class="mt-1 w-full rounded-lg border border-[#7C7C6B]/60 bg-[#A7D3E6]/70 px-3 py-2 text-[#1E4C6D] shadow-sm placeholder:text-[#7C7C6B] focus:border-[#6BAA3D] focus:outline-none focus:ring-2 focus:ring-[#6BAA3D]/40"
+          ></textarea>
 
-        <button type="submit">Enviar review</button>
-      </form>
-    </section>
-  </main>
+          <button type="submit" class="mt-4 inline-flex items-center justify-center rounded-lg bg-[#1E4C6D] px-4 py-2 text-sm font-semibold text-[#A7D3E6] shadow hover:bg-[#8C6E4A] focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/40">Enviar review</button>
+        </form>
+      </section>
+    </main>
+  </div>
 
   <div id="footer-placeholder"></div>
 

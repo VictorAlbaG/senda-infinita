@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Panel de administrador - Senda Infinita</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="/css/app.css">
+  <style>
+    .admin-section {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .admin-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .admin-table th,
+    .admin-table td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 8px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .admin-table th {
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .admin-table td {
+      color: #1f2937;
+    }
+    .admin-input {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 10px;
+      background: #ffffff;
+      color: #0f172a;
+    }
+    .admin-button {
+      background: #0f172a;
+      color: #ffffff;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.875rem;
+    }
+    .admin-button.secondary {
+      background: #64748b;
+    }
+    .admin-button.ghost {
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+    }
+    .admin-button.danger {
+      background: #b91c1c;
+    }
+    .admin-grid {
+      display: grid;
+      gap: 12px;
+    }
+    @media (min-width: 640px) {
+      .admin-grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .admin-grid-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900">
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <header class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-wide text-slate-600">Panel de administración</p>
+        <h1 class="text-3xl font-semibold">Administrador</h1>
+      </div>
+      <button id="logout-btn" class="admin-button">Cerrar sesión</button>
+    </header>
+
+    <p id="admin-status" class="text-sm text-slate-600"></p>
+
+    <section class="admin-section">
+      <h2 class="text-xl font-semibold">Usuarios</h2>
+      <div id="users-container" class="mt-4"></div>
+    </section>
+
+    <section class="admin-section">
+      <h2 class="text-xl font-semibold">Comentarios (reviews)</h2>
+      <div id="reviews-container" class="mt-4"></div>
+    </section>
+
+    <section class="admin-section space-y-6">
+      <div>
+        <h2 class="text-xl font-semibold">Rutas</h2>
+        <p class="text-sm text-slate-600">Crea, edita o elimina rutas manuales.</p>
+      </div>
+
+      <form id="route-create-form" class="admin-card admin-grid admin-grid-3">
+        <input class="admin-input" type="text" name="title" placeholder="Titulo" required />
+        <select class="admin-input" name="difficulty" required>
+          <option value="">Dificultad</option>
+          <option value="EASY">FÁCIL</option>
+          <option value="MODERATE">MODERADO</option>
+          <option value="HARD">DIFÍCIL</option>
+        </select>
+        <input class="admin-input" type="text" name="description" placeholder="Descripcion" />
+        <input class="admin-input" type="number" step="0.1" name="distanceKm" placeholder="Distancia (km)" />
+        <input class="admin-input" type="number" step="1" name="ascentM" placeholder="Desnivel (m)" />
+        <input class="admin-input" type="number" step="0.000001" name="startLat" placeholder="Start lat" />
+        <input class="admin-input" type="number" step="0.000001" name="startLng" placeholder="Start lng" />
+        <input class="admin-input" type="number" step="0.000001" name="endLat" placeholder="End lat" />
+        <input class="admin-input" type="number" step="0.000001" name="endLng" placeholder="End lng" />
+        <div class="flex items-center gap-3">
+          <button class="admin-button" type="submit">Crear ruta</button>
+          <span id="route-create-message" class="text-sm text-slate-600"></span>
+        </div>
+      </form>
+
+      <form id="route-import-form" class="admin-card admin-grid admin-grid-3">
+        <input class="admin-input" type="text" name="title" placeholder="Titulo para ORS" required />
+        <select class="admin-input" name="difficulty" required>
+          <option value="">Dificultad</option>
+          <option value="EASY">FÁCIL</option>
+          <option value="MODERATE">MODERADO</option>
+          <option value="HARD">DIFÍCIL</option>
+        </select>
+        <input class="admin-input" type="text" name="description" placeholder="Descripcion" />
+        <input class="admin-input" type="number" step="0.000001" name="startLat" placeholder="Start lat" required />
+        <input class="admin-input" type="number" step="0.000001" name="startLng" placeholder="Start lng" required />
+        <input class="admin-input" type="number" step="0.000001" name="endLat" placeholder="End lat" required />
+        <input class="admin-input" type="number" step="0.000001" name="endLng" placeholder="End lng" required />
+        <div class="flex items-center gap-3">
+          <button class="admin-button secondary" type="submit">Importar ORS</button>
+          <span id="route-import-message" class="text-sm text-slate-600"></span>
+        </div>
+      </form>
+
+      <div id="routes-container" class="admin-grid"></div>
+    </section>
+  </main>
+
+  <script src="js/admin.js" defer></script>
+</body>
+</html>

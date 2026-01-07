@@ -2,32 +2,41 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Mi perfil – Senda Infinita</title>
+  <title>Mi perfil - Senda Infinita</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="/css/app.css">
 </head>
-<body>
+<body class="min-h-screen bg-[#1E4C6D] text-[#A7D3E6]">
   <div id="header-placeholder"></div>
 
-  <main>
-    <section>
-      <h1>Mi perfil</h1>
-      <p id="profile-basic"></p>
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <section class="rounded-3xl border border-[#A5B86C]/60 bg-[#A7D3E6] p-6 text-[#1E4C6D] shadow-lg">
+      <h1 class="text-3xl font-semibold">Mi perfil</h1>
+      <p id="profile-basic" class="mt-2 text-[#1E4C6D]/80"></p>
     </section>
 
-    <section>
-      <h2>Mis rutas favoritas</h2>
-      <div id="profile-favorites"></div>
+    <section class="rounded-3xl border border-[#A5B86C]/60 bg-[#A7D3E6] p-6 text-[#1E4C6D] shadow-lg">
+      <h2 class="text-xl font-semibold">Mis rutas favoritas</h2>
+      <div id="profile-favorites" class="mt-4 grid gap-4 sm:grid-cols-2"></div>
     </section>
 
-    <section>
-      <h2>Mis reviews</h2>
-      <div id="profile-reviews"></div>
+    <section class="rounded-3xl border border-[#A5B86C]/60 bg-[#A7D3E6] p-6 text-[#1E4C6D] shadow-lg">
+      <h2 class="text-xl font-semibold">Mis reviews</h2>
+      <div id="profile-reviews" class="mt-4 space-y-3"></div>
     </section>
 
-    <section>
-      <h2>Diario de actividad</h2>
-      <p>Se marca el día en el que has dejado alguna review.</p>
-      <div id="calendar-container"></div>
+    <section class="rounded-3xl border border-[#A5B86C]/60 bg-[#A7D3E6] p-6 text-[#1E4C6D] shadow-lg">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-xl font-semibold">Diario de actividad</h2>
+        <div class="flex items-center gap-2 rounded-full bg-[#1E4C6D] px-3 py-1 text-sm text-[#A7D3E6]">
+          <button id="calendar-prev" type="button" class="rounded-full bg-[#8C6E4A] px-3 py-1 font-semibold text-[#A7D3E6] hover:bg-[#6BAA3D]">Mes anterior</button>
+          <span id="calendar-month" class="px-2 font-semibold uppercase tracking-wide"></span>
+          <button id="calendar-next" type="button" class="rounded-full bg-[#8C6E4A] px-3 py-1 font-semibold text-[#A7D3E6] hover:bg-[#6BAA3D]">Mes siguiente</button>
+        </div>
+      </div>
+      <p class="mt-2 text-[#1E4C6D]/80">Se marca el día en el que has dejado alguna review.</p>
+      <div id="calendar-container" class="mt-4"></div>
     </section>
   </main>
 

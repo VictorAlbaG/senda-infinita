@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchAndRenderRoutes();
   });
 
-  // Paginación
+  // Paginaci¢n
   prevPageBtn.addEventListener("click", () => {
     if (state.page > 1) {
       state.page -= 1;
@@ -106,12 +106,15 @@ function renderRoutes(routes) {
 
   routes.forEach((route) => {
     const card = document.createElement("article");
-    card.className = "route-card";
+    card.className =
+      "route-card rounded-2xl border border-[#7C7C6B]/40 bg-[#A7D3E6]/80 p-4 shadow-sm transition-shadow hover:shadow-md";
 
     const title = document.createElement("h3");
+    title.className = "text-lg font-semibold text-[#1E4C6D]";
     title.textContent = route.title;
 
     const meta = document.createElement("p");
+    meta.className = "mt-1 text-sm text-[#1E4C6D]/70";
     const distance =
       route.distanceKm != null
         ? `${route.distanceKm.toFixed(1)} km`
@@ -120,12 +123,15 @@ function renderRoutes(routes) {
       route.ascentM != null ? `${route.ascentM} m +` : "Desnivel no disponible";
     const difficulty = route.difficulty || "SIN CLASIFICAR";
 
-    meta.textContent = `${distance} · ${ascent} · Dificultad: ${difficulty}`;
+    meta.textContent = `${distance} | ${ascent} | Dificultad: ${difficulty}`;
 
     const description = document.createElement("p");
-    description.textContent = route.description || "Sin descripción.";
+    description.className = "mt-2 text-sm text-[#1E4C6D]/80";
+    description.textContent = route.description || "Sin descripci¢n.";
 
     const link = document.createElement("a");
+    link.className =
+      "mt-4 inline-flex items-center text-sm font-semibold text-[#1E4C6D] hover:text-[#8C6E4A]";
     link.href = `detalle.html?slug=${encodeURIComponent(route.slug)}`;
     link.textContent = "Ver detalle";
 

@@ -64,7 +64,7 @@ async function loadRouteDetail(slug) {
   }
 }
 
-/* --------------------------- Render de información --------------------------- */
+/* --------------------------- Render de informaci¢n --------------------------- */
 
 function renderRouteInfo(route) {
   const titleEl = document.getElementById('route-title');
@@ -80,7 +80,7 @@ function renderRouteInfo(route) {
     route.ascentM != null ? `${route.ascentM} m +` : 'Desnivel no disponible';
   const difficulty = route.difficulty || 'SIN CLASIFICAR';
 
-  metaEl.textContent = `${distance} · ${ascent} · Dificultad: ${difficulty}`;
+  metaEl.textContent = `${distance} | ${ascent} | Dificultad: ${difficulty}`;
 
   descEl.textContent = route.description || 'Sin descripción.';
 
@@ -252,11 +252,16 @@ function renderReviews(reviews, pagination) {
   } else {
     reviews.forEach((review) => {
       const article = document.createElement('article');
+      article.className =
+        'rounded-xl border border-[#7C7C6B]/40 bg-[#A5B86C]/45 p-4 text-[#1E4C6D] shadow-sm';
       const header = document.createElement('h3');
+      header.className = 'text-sm font-semibold text-[#1E4C6D]';
       const body = document.createElement('p');
+      body.className = 'mt-2 text-sm text-[#1E4C6D]/80';
       const meta = document.createElement('p');
+      meta.className = 'mt-2 text-xs text-[#1E4C6D]/70';
 
-      header.textContent = `⭐ ${review.rating} / 5`;
+      header.textContent = `? ${review.rating} / 5`;
       body.textContent = review.comment || '(sin comentario)';
       const authorName = review.user?.name || 'Usuario anónimo';
       const dateStr = new Date(review.createdAt).toLocaleString('es-ES');
@@ -369,13 +374,16 @@ function renderPhotos(photos) {
 
   photos.forEach((photo) => {
     const figure = document.createElement('figure');
+    figure.className =
+      'rounded-xl border border-[#7C7C6B]/40 bg-[#A7D3E6]/70 p-3 shadow-sm';
     const img = document.createElement('img');
+    img.className =
+      'w-full max-w-[240px] rounded-lg border border-[#7C7C6B]/40';
     const caption = document.createElement('figcaption');
+    caption.className = 'mt-2 text-xs text-[#1E4C6D]/70';
 
     img.src = photo.url;
     img.alt = `Foto de la ruta`;
-    img.style.maxWidth = '200px';
-    img.style.display = 'block';
 
     const authorName = photo.user?.name || 'Usuario';
     const dateStr = new Date(photo.createdAt).toLocaleString('es-ES');

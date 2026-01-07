@@ -4,14 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('login-form');
   const registerForm = document.getElementById('register-form');
 
-  // Esto actualiza el nav si el header ya estaba puesto (por ejemplo, en páginas sin layout dinámico),
+  // Esto actualiza el nav si el header ya estaba puesto,
   // y si aún no, no pasa nada porque los elementos serán null.
   updateAuthUi();
+  redirectAdminIfNeeded();
 
   // Cuando layout.js termine de inyectar el header, volvemos a actualizar la UI
   // y enganchamos el listener del botón de logout.
   document.addEventListener('header-loaded', () => {
     updateAuthUi();
+    redirectAdminIfNeeded();
     attachLogoutHandler();
   });
 
@@ -22,11 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Si ya estás logueado, no tiene sentido ver login o registro
   if (token && loginForm) {
-    window.location.href = 'index.html';
+    const user = getCurrentUser();
+    window.location.href = user && user.role === 'ADMIN' ? 'admin.html' : 'index.html';
     return;
   }
   if (token && registerForm) {
-    window.location.href = 'index.html';
+    const user = getCurrentUser();
+    window.location.href = user && user.role === 'ADMIN' ? 'admin.html' : 'index.html';
     return;
   }
 
@@ -80,6 +84,18 @@ function getCurrentUser() {
     return JSON.parse(raw);
   } catch {
     return null;
+  }
+}
+
+function redirectAdminIfNeeded() {
+  const user = getCurrentUser();
+  const token = localStorage.getItem('token');
+  if (!token || !user || user.role !== 'ADMIN') return;
+
+  const path = window.location.pathname.toLowerCase();
+  const isAdminPage = path.endsWith('/admin.html') || path.endsWith('admin.html');
+  if (!isAdminPage) {
+    window.location.href = 'admin.html';
   }
 }
 
@@ -165,9 +181,9 @@ function setupLoginForm(form) {
 
       setMessage(messageEl, 'Sesión iniciada correctamente. Redirigiendo...', false);
 
-      // Redirigir a la home
+      // Redirigir a la home o admin
       setTimeout(() => {
-        window.location.href = 'index.html';
+        window.location.href = data.user && data.user.role === 'ADMIN' ? 'admin.html' : 'index.html';
       }, 800);
     } catch (error) {
       console.error('Error en login:', error);
@@ -221,7 +237,7 @@ function setupRegisterForm(form) {
       setMessage(messageEl, 'Cuenta creada correctamente. Redirigiendo...', false);
 
       setTimeout(() => {
-        window.location.href = 'index.html';
+        window.location.href = data.user && data.user.role === 'ADMIN' ? 'admin.html' : 'index.html';
       }, 800);
     } catch (error) {
       console.error('Error en registro:', error);
