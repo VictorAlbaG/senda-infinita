@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const trees = document.querySelectorAll('.tree-shadow');
   const title = document.getElementById('hero-title');
   const subtitle = document.getElementById('hero-subtitle');
+  const clouds = document.querySelectorAll(".cloud-parallax");
+  const heroImageParallax = document.getElementById('hero-image-parallax');
 
   if (!scene || !heroImage || trees.length === 0) return;
 
@@ -19,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const progress = clamp((window.scrollY - sceneTop) / maxScroll, 0, 1);
 
     const move = 50 * progress;
+    const moveClouds = 7 * progress
     const fade = clamp(1 - progress * 1.2, 0, 1);
     const heroFade = clamp(1 - progress * 1.1, 0, 1);
 
@@ -31,9 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
       tree.style.setProperty('--tree-x', `${x}vw`);
       tree.style.setProperty('--tree-y', `${rise}vh`);
       tree.style.opacity = String(fade);
-    });
+          });
+// Nubes (uno a la izq, otro a la der)
+    clouds.forEach((cloud) => {
+      const side = cloud.dataset.side === "right" ? 1 : -1;
+      const baseOffset = parseFloat(cloud.dataset.offset || "0");
+      const rise = parseFloat(cloud.dataset.rise || "0");
+      const x = side * (baseOffset - moveClouds);
 
+      cloud.style.setProperty("--cloud-x", `${x}vw`);
+      cloud.style.setProperty("--cloud-y", `${rise}vh`);
+      cloud.style.opacity = String(fade);
+    });
+    
     heroImage.style.opacity = String(heroFade);
+    heroImageParallax.style.opacity = String(heroFade);
 
     if (title) title.style.opacity = String(clamp(1 - progress * 0.9, 0, 1));
     if (subtitle) subtitle.style.opacity = String(clamp(1 - progress * 1.1, 0, 1));
