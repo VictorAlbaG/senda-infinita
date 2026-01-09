@@ -64,13 +64,19 @@ async function loadRouteDetail(slug) {
   }
 }
 
-/* --------------------------- Render de informaci¢n --------------------------- */
+/* --------------------------- Render de información --------------------------- */
 
 function renderRouteInfo(route) {
   const titleEl = document.getElementById('route-title');
   const metaEl = document.getElementById('route-meta');
   const descEl = document.getElementById('route-description');
   const ratingEl = document.getElementById('route-rating');
+
+  const difficultyLabels = {
+    EASY: "Fácil",
+    MODERATE: "Moderada",
+    HARD: "Difícil",
+  };
 
   titleEl.textContent = route.title;
 
@@ -80,7 +86,8 @@ function renderRouteInfo(route) {
     route.ascentM != null ? `${route.ascentM} m +` : 'Desnivel no disponible';
   const difficulty = route.difficulty || 'SIN CLASIFICAR';
 
-  metaEl.textContent = `${distance} | ${ascent} | Dificultad: ${difficulty}`;
+  const diffText = difficultyLabels[difficulty] ?? difficulty;
+  metaEl.textContent = `${distance} | ${ascent} | Dificultad: ${diffText}`;
 
   descEl.textContent = route.description || 'Sin descripción.';
 
@@ -109,7 +116,7 @@ function initMap(route) {
     mapInstance = L.map('map');
   }
 
-  // Tile layer de OpenStreetMap
+  // OpenStreetMap
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18,
     attribution: '&copy; OpenStreetMap contributors',
@@ -261,7 +268,7 @@ function renderReviews(reviews, pagination) {
       const meta = document.createElement('p');
       meta.className = 'mt-2 text-xs text-[#1E4C6D]/70';
 
-      header.textContent = `? ${review.rating} / 5`;
+      header.textContent = `⭐ ${review.rating} / 5`;
       body.textContent = review.comment || '(sin comentario)';
       const authorName = review.user?.name || 'Usuario anónimo';
       const dateStr = new Date(review.createdAt).toLocaleString('es-ES');

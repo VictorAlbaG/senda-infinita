@@ -393,11 +393,11 @@ async function onRouteAction(event) {
   if (!button) return;
 
   const action = button.dataset.action;
-  const routeId = button.dataset.id;
+  const card = button.closest('.admin-card');
+  const routeId = card?.dataset.id || button.dataset.id;
   if (!action || !routeId) return;
 
   if (action === 'save-route') {
-    const card = button.closest('[data-id]');
     if (!card) return;
 
     const payload = readRoutePayload(card);

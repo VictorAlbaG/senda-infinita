@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <link rel="stylesheet" href="/css/app.css">
-  <link rel="stylesheet" href="/css/tailwind.css">
+  <link rel="stylesheet" href="../styles/tailwind.css">
 </head>
 <body class="min-h-screen bg-[linear-gradient(135deg,_#A7D3E6_0%,_#A5B86C_50%,_#6BAA3D_100%)] text-[#1E4C6D]">
   <div id="header-placeholder"></div>
@@ -20,7 +20,28 @@
 
 
       <div id="hero-image-parallax"></div> 
-      
+
+      <div id="trail-layer" aria-hidden="true">
+        <svg id="trail-svg" viewBox="0 0 800 420" preserveAspectRatio="xMidYMax meet">
+          <path id="trail-edge"
+            d="M 400 415
+              C 242 379 282 341 496 312
+              C 710 284 390 238 358 224
+              C 325 211 465 177 512 163
+              C 573 145 366 139 390 112
+              C 414 84 589 63 693 75" />
+          <path id="trail-path"
+            d="M 400 415
+              C 242 379 282 341 496 312
+              C 710 284 390 238 358 224
+              C 325 211 465 177 512 163
+              C 573 145 366 139 390 112
+              C 414 84 589 63 693 75" />
+        </svg>
+      </div>
+
+
+
       <div id="arbol" data-side="left" data-offset="0" data-rise="0"></div>
       <div id="arbol2" data-side="left" data-offset="0" data-rise="0"></div>
       <div id="arbol3" data-side="right" data-offset="0" data-rise="0"></div>
