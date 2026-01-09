@@ -103,6 +103,11 @@ async function fetchAndRenderRoutes() {
 
 function renderRoutes(routes) {
   routesContainer.innerHTML = "";
+  const difficultyLabels = {
+    EASY: "Fácil",
+    MODERATE: "Moderada",
+    HARD: "Difícil",
+  };
 
   routes.forEach((route) => {
     const card = document.createElement("article");
@@ -123,11 +128,13 @@ function renderRoutes(routes) {
       route.ascentM != null ? `${route.ascentM} m +` : "Desnivel no disponible";
     const difficulty = route.difficulty || "SIN CLASIFICAR";
 
-    meta.textContent = `${distance} | ${ascent} | Dificultad: ${difficulty}`;
+    const diffText = difficultyLabels[difficulty] ?? difficulty;
+    meta.textContent = `${distance} | ${ascent} | Dificultad: ${diffText}`;
+
 
     const description = document.createElement("p");
     description.className = "mt-2 text-sm text-[#1E4C6D]/80";
-    description.textContent = route.description || "Sin descripci¢n.";
+    description.textContent = route.description || "Sin descripción.";
 
     const link = document.createElement("a");
     link.className =
@@ -149,14 +156,14 @@ function renderPagination(pagination) {
 
   state.page = page;
 
-  if (totalPages <= 1) {
+  if (totalPages <= 0) {
     paginationSection.style.display = "none";
     return;
   }
 
   paginationSection.style.display = "block";
 
-  prevPageBtn.disabled = page <= 1;
+  prevPageBtn.disabled = page <= 0;
   nextPageBtn.disabled = page >= totalPages;
 
   paginationInfo.textContent = `Página ${page} de ${totalPages} (total rutas: ${total})`;

@@ -172,7 +172,7 @@ function renderMyReviews(reviews) {
 
     const text = document.createElement('span');
     text.className = 'text-[#1E4C6D]/80';
-    text.textContent = ` £ ? ${r.rating}/5 £ ${dateStr}`;
+    text.textContent = `: ${r.rating}/5 - ${dateStr}`;
 
     li.appendChild(link);
     li.appendChild(text);
@@ -280,7 +280,7 @@ function renderDiaryCalendar(reviews) {
   const legend = document.createElement('p');
   legend.className = 'mt-3 text-sm text-[#1E4C6D]/70';
   legend.textContent =
-    'Los dí­as en verde indican que has dejado al menos una review en esa fecha.';
+    'Los dí­as marcados indican que has dejado al menos una review en esa fecha.';
   container.appendChild(legend);
 
   if (reviews.length === 0) {

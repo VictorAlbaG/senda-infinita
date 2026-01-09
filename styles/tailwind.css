@@ -2,3 +2,246 @@
 
 /* Tailwind escanea las clases aquí (HTML + JS del front) */
 @source "../public/**/*.{html,js}";
+
+
+
+
+
+/* CSS PROPIO */
+#header-placeholder {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-12px);
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+    body.header-visible #header-placeholder {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    #hero {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #hero-image {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      background: url('/media/hero-paisaje.jpg') center / cover no-repeat;
+      transition: opacity 200ms ease;
+    }
+    #hero-image-parallax {
+      position: absolute;
+      inset: 0;
+      background: url('/media/hero-paisaje1.png') center / cover no-repeat;
+      transition: opacity 200ms ease;
+    }
+    #hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.35) 0%,
+        rgba(0, 0, 0, 0.55) 70%,
+        rgba(0, 0, 0, 0.65) 100%
+      );
+    }
+    #hero-title {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    #tree-layer {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 6vw 6vh;
+      pointer-events: none;
+    }
+    #cloud-layer{
+      position: absolute;
+      inset: 0;
+      background: url('/media/clouds_1.png') top right no-repeat;
+      transition: opacity 200ms ease;
+      top:30vh;
+      right:10vw;
+    }
+     #cloud-layer2{
+      position: absolute;
+      inset: 0;
+      background: url('/media/clouds_2.png') top left no-repeat;
+      transition: opacity 200ms ease;
+      top: 4vh;
+      left:10vw;
+    }
+     #arbol{
+      position: absolute;
+      inset: 0;
+      background: url('/media/arbol1.png') bottom left no-repeat;
+      transition: opacity 200ms ease;
+      background-size: 80vh;
+      bottom: -15vh;
+      left:-10vw; 
+    } 
+    #arbol2{
+      position: absolute;
+      inset: 0;
+      background: url('/media/arbol2.png') bottom left no-repeat;
+      transition: opacity 200ms ease;
+      background-size: 60vh;
+      bottom: -15vh;
+      left: 10vw; 
+    }
+    #arbol3{
+      position: absolute;
+      inset: 0;
+      background: url('/media/arbol3.png') bottom left no-repeat;
+      transition: opacity 200ms ease;
+      background-size: 60vh;
+      bottom: -15vh;
+      left: 47vw; 
+    }
+    #arbol4{
+      position: absolute;
+      inset: 0;
+      background: url('/media/arbol1.png') bottom left no-repeat;
+      transition: opacity 200ms ease;
+      background-size: 60vh;
+      bottom: -15vh;
+      left: 25vw; 
+    }
+    #arbol5{
+      position: absolute;
+      inset: 0;
+      background: url('/media/arbol1.png') bottom left no-repeat;
+      transition: opacity 200ms ease;
+      background-size: 70vh;
+      bottom: -15vh;
+      left: 62vw; 
+    }
+    #arbol6{
+      position: absolute;
+      inset: 0;
+      background: url('/media/arbol3.png') bottom left no-repeat;
+      transition: opacity 200ms ease;
+      background-size: 82vh;
+      bottom: -15vh;
+      left: 71vw; 
+    }
+    #arbusto1{
+      position: absolute;
+      inset: 0;
+      background: url('/media/arbusto2.png') bottom left no-repeat;
+      transition: opacity 200ms ease;
+      background-size: 58vh;
+      bottom: -7vh;
+      left: -1vw; 
+    }
+    #arbusto2{
+      position: absolute;
+      inset: 0;
+      background: url('/media/arbusto1.png') bottom left no-repeat;
+      transition: opacity 200ms ease;
+      background-size: 25vh;
+      bottom: -4vw;
+      left: 27vw; 
+    }
+    #arbusto3{
+      position: absolute;
+      inset: 0;
+      background: url('/media/arbusto3.png') bottom right no-repeat;
+      transition: opacity 200ms ease;
+      background-size: 40vh;
+      bottom: -4vw;
+      right: 19vw; 
+    }
+    #arbusto4{
+      position: absolute;
+      inset: 0;
+      background: url('/media/arbusto2.png') bottom right no-repeat;
+      transition: opacity 200ms ease;
+      background-size: 58vh;
+      bottom: -7vh;
+      right: -4vw; 
+    }
+    .cloud-parallax {
+        transform: translate(var(--cloud-x, 0vw), var(--cloud-y, 0vh));
+        will-change: transform, opacity;
+    }
+    .tree {
+      width: 72px;
+      height: 110px;
+      opacity: 0;
+    }
+    .tree-shadow {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      --tree-x: 0vw;
+      --tree-y: 0vh;
+      --tree-scale: 1;
+      transform: translate(calc(-50% + var(--tree-x)), calc(-1 * var(--tree-y)))
+        scale(var(--tree-scale));
+      transform-origin: bottom center;
+      transition: transform 80ms linear, opacity 120ms linear;
+      opacity: 0;
+    }
+    #home-content {
+      position: relative;
+      z-index: 1;
+      padding-top: 96px;
+    }
+    @media (max-width: 640px) {
+      .tree {
+        width: 56px;
+        height: 86px;
+      }
+      #home-content {
+        padding-top: 80px;
+      }
+    }
+
+
+
+
+/* Sendero dentro del hero */
+#trail-layer{
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  display: grid;
+  place-items: end center;
+  padding-bottom: 0vh;
+}
+
+#trail-svg{
+  width: min(980px, 92vw);
+  height: min(520px, 66vh);
+  overflow: visible;
+}
+
+#trail-edge{
+  fill: none;
+  stroke: rgba(158, 158, 158, 0.35);
+  stroke-width: 22;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#trail-path{
+  fill: none;
+  stroke: #8c6e4ac0;
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
