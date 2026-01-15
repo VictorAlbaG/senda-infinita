@@ -14,8 +14,10 @@ router.get('/reviews', adminController.listReviews);
 router.delete('/reviews/:id', adminController.deleteReview);
 
 router.get('/routes', adminController.listRoutes);
-router.post('/routes', adminController.createRoute);
 router.patch('/routes/:id', adminController.updateRoute);
 router.delete('/routes/:id', adminController.deleteRoute);
+
+router.get('/photos', adminController.listPhotos);
+router.delete('/photos/:id', adminController.deletePhoto);
 
 module.exports = router;
