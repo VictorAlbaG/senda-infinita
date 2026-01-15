@@ -25,12 +25,28 @@ function getToken() {
   return localStorage.getItem('token') || null;
 }
 
+function getCurrentUser() {
+  const raw = localStorage.getItem('user');
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
 function setupEventListeners() {
   const favoriteBtn = document.getElementById('favorite-btn');
   favoriteBtn.addEventListener('click', onFavoriteClick);
 
   const reviewForm = document.getElementById('review-form');
   reviewForm.addEventListener('submit', onReviewSubmit);
+  initStarRating();
+
+  const reviewsContainer = document.getElementById('reviews-container');
+  if (reviewsContainer) {
+    reviewsContainer.addEventListener('click', onReviewAction);
+  }
 
   const reviewsPrevBtn = document.getElementById('reviews-prev');
   const reviewsNextBtn = document.getElementById('reviews-next');
@@ -92,7 +108,8 @@ function renderRouteInfo(route) {
   descEl.textContent = route.description || 'Sin descripción.';
 
   if (route.reviewsCount && route.reviewsCount > 0 && route.avgRating != null) {
-    ratingEl.textContent = `Valoración media: ${route.avgRating.toFixed(
+    const stars = buildStars(route.avgRating);
+    ratingEl.textContent = `Valoración media: ${stars} ${route.avgRating.toFixed(
       1
     )} / 5 (${route.reviewsCount} opiniones)`;
   } else {
@@ -251,6 +268,8 @@ function renderReviews(reviews, pagination) {
   const info = document.getElementById('reviews-pagination-info');
   const prevBtn = document.getElementById('reviews-prev');
   const nextBtn = document.getElementById('reviews-next');
+  const currentUser = getCurrentUser();
+  const currentUserId = currentUser?.id;
 
   container.innerHTML = '';
 
@@ -261,6 +280,7 @@ function renderReviews(reviews, pagination) {
       const article = document.createElement('article');
       article.className =
         'rounded-xl border border-[#7C7C6B]/40 bg-[#A5B86C]/45 p-4 text-[#1E4C6D] shadow-sm';
+      article.dataset.reviewId = String(review.id);
       const header = document.createElement('h3');
       header.className = 'text-sm font-semibold text-[#1E4C6D]';
       const body = document.createElement('p');
@@ -268,7 +288,7 @@ function renderReviews(reviews, pagination) {
       const meta = document.createElement('p');
       meta.className = 'mt-2 text-xs text-[#1E4C6D]/70';
 
-      header.textContent = `⭐ ${review.rating} / 5`;
+      header.textContent = `${buildStars(review.rating)} ${review.rating} / 5`;
       body.textContent = review.comment || '(sin comentario)';
       const authorName = review.user?.name || 'Usuario anónimo';
       const dateStr = new Date(review.createdAt).toLocaleString('es-ES');
@@ -277,6 +297,109 @@ function renderReviews(reviews, pagination) {
       article.appendChild(header);
       article.appendChild(body);
       article.appendChild(meta);
+
+      if (currentUserId && review.user?.id === currentUserId) {
+        const actions = document.createElement('div');
+        actions.className = 'mt-3 flex flex-wrap items-center gap-3';
+
+        const editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className =
+          'inline-flex items-center justify-center rounded-lg border border-[#1E4C6D]/60 bg-[#A7D3E6]/70 px-3 py-1.5 text-xs font-medium text-[#1E4C6D] shadow-sm hover:bg-[#A5B86C]/70 focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/30';
+        editBtn.dataset.action = 'edit-review';
+        editBtn.textContent = 'Editar';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className =
+          'inline-flex items-center justify-center rounded-lg bg-[#1E4C6D] px-3 py-1.5 text-xs font-semibold text-[#A7D3E6] shadow hover:bg-[#8C6E4A] focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/40';
+        deleteBtn.dataset.action = 'delete-review';
+        deleteBtn.textContent = 'Eliminar';
+
+        actions.appendChild(editBtn);
+        actions.appendChild(deleteBtn);
+        article.appendChild(actions);
+
+        const editForm = document.createElement('div');
+        editForm.className =
+          'mt-3 hidden rounded-lg border border-[#7C7C6B]/40 bg-[#A7D3E6]/70 p-3';
+        editForm.dataset.role = 'edit-review-form';
+
+        const editTitle = document.createElement('p');
+        editTitle.className = 'text-xs font-semibold text-[#1E4C6D]';
+        editTitle.textContent = 'Editar tu review';
+
+        const ratingRow = document.createElement('div');
+        ratingRow.className = 'mt-2 flex flex-wrap items-center gap-3';
+
+        const starsWrap = document.createElement('div');
+        starsWrap.className = 'flex items-center gap-1';
+
+        const ratingValue = document.createElement('span');
+        ratingValue.className = 'text-xs text-[#1E4C6D]/70';
+
+        const ratingInput = document.createElement('input');
+        ratingInput.type = 'hidden';
+        ratingInput.value = String(review.rating);
+        ratingInput.dataset.role = 'edit-rating';
+
+        for (let i = 1; i <= 5; i += 1) {
+          const starBtn = document.createElement('button');
+          starBtn.type = 'button';
+          starBtn.className =
+            'review-star text-xl text-[#1E4C6D]/40 transition hover:text-[#8C6E4A]';
+          starBtn.dataset.value = String(i);
+          starBtn.setAttribute('aria-label', `${i} estrellas`);
+          starBtn.textContent = '★';
+          starsWrap.appendChild(starBtn);
+        }
+
+        ratingRow.appendChild(starsWrap);
+        ratingRow.appendChild(ratingValue);
+        ratingRow.appendChild(ratingInput);
+
+        const commentInput = document.createElement('textarea');
+        commentInput.className =
+          'mt-3 w-full rounded-lg border border-[#7C7C6B]/60 bg-[#A7D3E6]/70 px-3 py-2 text-sm text-[#1E4C6D] shadow-sm placeholder:text-[#7C7C6B] focus:border-[#6BAA3D] focus:outline-none focus:ring-2 focus:ring-[#6BAA3D]/40';
+        commentInput.rows = 3;
+        commentInput.placeholder = 'Actualiza tu comentario';
+        commentInput.value = review.comment || '';
+        commentInput.dataset.role = 'edit-comment';
+
+        const formMessage = document.createElement('p');
+        formMessage.className = 'mt-2 text-xs text-[#1E4C6D]/70';
+        formMessage.dataset.role = 'edit-message';
+
+        const formActions = document.createElement('div');
+        formActions.className = 'mt-3 flex flex-wrap items-center gap-3';
+
+        const saveBtn = document.createElement('button');
+        saveBtn.type = 'button';
+        saveBtn.className =
+          'inline-flex items-center justify-center rounded-lg bg-[#1E4C6D] px-3 py-1.5 text-xs font-semibold text-[#A7D3E6] shadow hover:bg-[#6BAA3D] focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/40';
+        saveBtn.dataset.action = 'save-review';
+        saveBtn.textContent = 'Guardar';
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.className =
+          'inline-flex items-center justify-center rounded-lg border border-[#1E4C6D]/60 bg-[#A7D3E6]/70 px-3 py-1.5 text-xs font-medium text-[#1E4C6D] shadow-sm hover:bg-[#A5B86C]/70 focus:outline-none focus:ring-2 focus:ring-[#1E4C6D]/30';
+        cancelBtn.dataset.action = 'cancel-edit-review';
+        cancelBtn.textContent = 'Cancelar';
+
+        formActions.appendChild(saveBtn);
+        formActions.appendChild(cancelBtn);
+
+        editForm.appendChild(editTitle);
+        editForm.appendChild(ratingRow);
+        editForm.appendChild(commentInput);
+        editForm.appendChild(formMessage);
+        editForm.appendChild(formActions);
+
+        article.appendChild(editForm);
+
+        setupInlineStarRating(starsWrap, ratingValue, ratingInput, review.rating);
+      }
 
       container.appendChild(article);
     });
@@ -295,6 +418,215 @@ function changeReviewsPage(delta) {
   loadReviews(newPage);
 }
 
+function buildStars(value) {
+  const rating = Math.max(0, Math.min(5, Math.round(value)));
+  return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+}
+
+function setupInlineStarRating(container, valueEl, inputEl, initialValue) {
+  const buttons = Array.from(container.querySelectorAll('button'));
+  let currentValue = initialValue;
+
+  const render = (value) => {
+    buttons.forEach((button) => {
+      const buttonValue = Number(button.dataset.value);
+      const isActive = buttonValue <= value;
+      button.classList.toggle('text-[#8C6E4A]', isActive);
+      button.classList.toggle('text-[#1E4C6D]/40', !isActive);
+      button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+    if (valueEl) {
+      valueEl.textContent = value ? `${value} / 5` : 'Sin valoración';
+    }
+    if (inputEl) {
+      inputEl.value = value ? String(value) : '';
+    }
+  };
+
+  render(currentValue);
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const value = Number(button.dataset.value);
+      currentValue = value;
+      render(value);
+    });
+  });
+}
+
+async function onReviewAction(event) {
+  const button = event.target.closest('button');
+  if (!button) return;
+
+  const action = button.dataset.action;
+  const article = button.closest('article');
+  const reviewId = article?.dataset.reviewId;
+  if (!action || !reviewId) return;
+
+  const token = getToken();
+  if (!token) {
+    alert('Necesitas iniciar sesión para modificar tu review.');
+    return;
+  }
+
+  if (action === 'edit-review') {
+    const form = article.querySelector('[data-role="edit-review-form"]');
+    if (form) {
+      form.classList.toggle('hidden');
+    }
+    return;
+  }
+
+  if (action === 'cancel-edit-review') {
+    const form = article.querySelector('[data-role="edit-review-form"]');
+    if (form) {
+      form.classList.add('hidden');
+    }
+    return;
+  }
+
+  if (action === 'save-review') {
+    const form = article.querySelector('[data-role="edit-review-form"]');
+    if (!form) return;
+
+    const ratingInput = form.querySelector('[data-role="edit-rating"]');
+    const commentInput = form.querySelector('[data-role="edit-comment"]');
+    const msgEl = form.querySelector('[data-role="edit-message"]');
+
+    const ratingRaw = ratingInput?.value || '';
+    const rating = Number(ratingRaw);
+    const comment = commentInput?.value.trim() || '';
+
+    if (!ratingRaw || Number.isNaN(rating) || rating < 1 || rating > 5) {
+      if (msgEl) {
+        msgEl.textContent = 'Selecciona una valoración válida.';
+      }
+      return;
+    }
+
+    if (msgEl) {
+      msgEl.textContent = 'Guardando cambios...';
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/reviews/${reviewId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ rating, comment }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Error HTTP ${response.status}`);
+      }
+
+      if (msgEl) {
+        msgEl.textContent = 'Review actualizada.';
+      }
+      loadReviews(reviewsPage);
+      loadRouteDetail(routeData.slug);
+    } catch (error) {
+      console.error('Error al actualizar review:', error);
+      if (msgEl) {
+        msgEl.textContent = error.message || 'No se pudo actualizar la review.';
+      }
+    }
+    return;
+  }
+
+  if (action === 'delete-review') {
+    const confirmed = window.confirm('¿Eliminar tu review?');
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(`${API_BASE}/reviews/${reviewId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Error HTTP ${response.status}`);
+      }
+
+      loadReviews(reviewsPage);
+      loadRouteDetail(routeData.slug);
+    } catch (error) {
+      console.error('Error al eliminar review:', error);
+      alert(error.message || 'No se pudo eliminar la review.');
+    }
+  }
+}
+
+let selectedRating = 0;
+
+function initStarRating() {
+  const container = document.getElementById('review-rating-stars');
+  const input = document.getElementById('review-rating');
+  const valueEl = document.getElementById('review-rating-value');
+  if (!container || !input) return;
+
+  const buttons = Array.from(container.querySelectorAll('.review-star'));
+  const render = (value, isPreview) => {
+    buttons.forEach((button) => {
+      const buttonValue = Number(button.dataset.value);
+      const isActive = buttonValue <= value;
+      button.classList.toggle('text-[#8C6E4A]', isActive);
+      button.classList.toggle('text-[#1E4C6D]/40', !isActive);
+      button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+
+    if (valueEl) {
+      valueEl.textContent = value ? `${value} / 5` : 'Sin valoración';
+    }
+
+    if (!isPreview) {
+      input.value = value ? String(value) : '';
+      selectedRating = value;
+    }
+  };
+
+  render(0, false);
+
+  buttons.forEach((button) => {
+    button.addEventListener('mouseenter', () => {
+      render(Number(button.dataset.value), true);
+    });
+
+    button.addEventListener('click', () => {
+      render(Number(button.dataset.value), false);
+    });
+  });
+
+  container.addEventListener('mouseleave', () => {
+    render(selectedRating, true);
+  });
+}
+
+function resetStarRating() {
+  const container = document.getElementById('review-rating-stars');
+  const input = document.getElementById('review-rating');
+  const valueEl = document.getElementById('review-rating-value');
+  if (!container || !input) return;
+
+  const buttons = Array.from(container.querySelectorAll('.review-star'));
+  selectedRating = 0;
+  input.value = '';
+  buttons.forEach((button) => {
+    button.classList.remove('text-[#8C6E4A]');
+    button.classList.add('text-[#1E4C6D]/40');
+    button.setAttribute('aria-pressed', 'false');
+  });
+  if (valueEl) {
+    valueEl.textContent = 'Sin valoración';
+  }
+}
+
 async function onReviewSubmit(event) {
   event.preventDefault();
 
@@ -309,10 +641,11 @@ async function onReviewSubmit(event) {
   const ratingInput = document.getElementById('review-rating');
   const commentInput = document.getElementById('review-comment');
 
-  const rating = ratingInput.value;
+  const ratingRaw = ratingInput.value;
+  const rating = Number(ratingRaw);
   const comment = commentInput.value.trim();
 
-  if (!rating) {
+  if (!ratingRaw || Number.isNaN(rating) || rating < 1 || rating > 5) {
     msgEl.textContent = 'Introduce una valoración entre 1 y 5.';
     return;
   }
@@ -334,7 +667,7 @@ async function onReviewSubmit(event) {
       throw new Error(errorData.message || `Error HTTP ${response.status}`);
     }
 
-    ratingInput.value = '';
+    resetStarRating();
     commentInput.value = '';
     msgEl.textContent = 'Review enviada correctamente.';
 
@@ -343,7 +676,7 @@ async function onReviewSubmit(event) {
     loadRouteDetail(routeData.slug);
   } catch (error) {
     console.error('Error al enviar review:', error);
-    msgEl.textContent = 'Ha ocurrido un error al enviar la review.';
+    msgEl.textContent = error.message || 'Ha ocurrido un error al enviar la review.';
   }
 }
 
