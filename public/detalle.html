@@ -81,16 +81,18 @@
           <h3 class="text-lg font-semibold">Dejar una review</h3>
           <p id="review-form-message" class="mt-1 text-sm text-[#1E4C6D]/70"></p>
 
-          <label for="review-rating" class="mt-4 block text-sm font-medium text-[#1E4C6D]">Valoración (1-5)</label>
-          <input
-            type="number"
-            id="review-rating"
-            name="rating"
-            min="1"
-            max="5"
-            required
-            class="mt-1 w-full rounded-lg border border-[#7C7C6B]/60 bg-[#A7D3E6]/70 px-3 py-2 text-[#1E4C6D] shadow-sm focus:border-[#6BAA3D] focus:outline-none focus:ring-2 focus:ring-[#6BAA3D]/40"
-          />
+          <label class="mt-4 block text-sm font-medium text-[#1E4C6D]">Valoración</label>
+          <div id="review-rating-stars" class="mt-2 flex flex-wrap items-center gap-3" role="radiogroup" aria-label="Valoración de la ruta">
+            <div class="flex items-center gap-1">
+              <button type="button" class="review-star text-2xl text-[#1E4C6D]/40 transition hover:text-[#8C6E4A]" data-value="1" aria-label="1 estrella" aria-pressed="false">★</button>
+              <button type="button" class="review-star text-2xl text-[#1E4C6D]/40 transition hover:text-[#8C6E4A]" data-value="2" aria-label="2 estrellas" aria-pressed="false">★</button>
+              <button type="button" class="review-star text-2xl text-[#1E4C6D]/40 transition hover:text-[#8C6E4A]" data-value="3" aria-label="3 estrellas" aria-pressed="false">★</button>
+              <button type="button" class="review-star text-2xl text-[#1E4C6D]/40 transition hover:text-[#8C6E4A]" data-value="4" aria-label="4 estrellas" aria-pressed="false">★</button>
+              <button type="button" class="review-star text-2xl text-[#1E4C6D]/40 transition hover:text-[#8C6E4A]" data-value="5" aria-label="5 estrellas" aria-pressed="false">★</button>
+            </div>
+            <span id="review-rating-value" class="text-sm text-[#1E4C6D]/70">Sin valoración</span>
+          </div>
+          <input type="hidden" id="review-rating" name="rating" required />
 
           <label for="review-comment" class="mt-4 block text-sm font-medium text-[#1E4C6D]">Comentarios</label>
           <textarea

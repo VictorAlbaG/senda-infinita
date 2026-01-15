@@ -51,6 +51,9 @@ async function createReview(req, res) {
       review,
     });
   } catch (error) {
+    if (error && error.code === 'P2002') {
+      return res.status(409).json({ message: 'Ya has dejado una review para esta ruta' });
+    }
     console.error('Error en createReview:', error);
     return res.status(500).json({ message: 'Error al crear review' });
   }
