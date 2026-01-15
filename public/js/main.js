@@ -112,10 +112,10 @@ function renderRoutes(routes) {
   routes.forEach((route) => {
     const card = document.createElement("article");
     card.className =
-      "route-card rounded-2xl border border-[#7C7C6B]/40 bg-[#A7D3E6]/80 p-4 shadow-sm transition-shadow hover:shadow-md";
+      "route-card pattern-pixels relative isolate overflow-hidden rounded-xl bg-white/70 border border-black/10 p-5 shadow-sm";
 
     const title = document.createElement("h3");
-    title.className = "text-lg font-semibold text-[#1E4C6D]";
+    title.className = "text-lg font-semibold text-[#3e3e3e]";
     title.textContent = route.title;
 
     const meta = document.createElement("p");
@@ -138,7 +138,7 @@ function renderRoutes(routes) {
 
     const link = document.createElement("a");
     link.className =
-      "mt-4 inline-flex items-center text-sm font-semibold text-[#1E4C6D] hover:text-[#8C6E4A]";
+      "mt-4 inline-flex items-center text-sm font-semibold text-[#3e3e3e] hover:text-[#8C6E4A]";
     link.href = `detalle.html?slug=${encodeURIComponent(route.slug)}`;
     link.textContent = "Ver detalle";
 

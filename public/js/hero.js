@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroImageParallax = document.getElementById('hero-image-parallax');
 
   const trees = document.querySelectorAll('.tree-shadow');
+  const foliage = document.querySelectorAll(
+    '#arbol, #arbol2, #arbol3, #arbol4, #arbol5, #arbol6, #arbusto1, #arbusto2, #arbusto3, #arbusto4'
+  );
   const clouds = document.querySelectorAll('.cloud-parallax');
 
   const title = document.getElementById('hero-title');
@@ -20,8 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const trailEdge = document.getElementById('trail-edge');
   const trailPath = document.getElementById('trail-path');
   let trailLen = 0;
+  let heroMove = 50;
+  let heroCloudMove = 7;
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function updateHeroMove() {
+    const styles = window.getComputedStyle(scene);
+    const move = parseFloat(styles.getPropertyValue('--hero-move'));
+    const cloudMove = parseFloat(styles.getPropertyValue('--hero-cloud-move'));
+
+    if (!Number.isNaN(move)) heroMove = move;
+    if (!Number.isNaN(cloudMove)) heroCloudMove = cloudMove;
+  }
 
   function setupTrail() {
     if (!trailPath || !trailEdge) return;
@@ -62,10 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const progress = clamp((window.scrollY - sceneTop) / maxScroll, 0, 1);
 
-    const move = 50 * progress;
-    const moveClouds = 7 * progress;
+    const move = heroMove * progress;
+    const moveClouds = heroCloudMove * progress;
 
     const fade = clamp(1 - progress * 1.2, 0, 1);
+    const blur = clamp(progress * 6, 0, 6);
     const heroFade = clamp(1 - progress * 1.1, 0, 1);
 
     // Árboles
@@ -79,6 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
         tree.style.setProperty('--tree-x', `${x}vw`);
         tree.style.setProperty('--tree-y', `${rise}vh`);
         tree.style.opacity = String(fade);
+        tree.style.filter = `blur(${blur}px)`;
+      });
+    }
+
+    if (foliage && foliage.length) {
+      foliage.forEach((item) => {
+        item.style.opacity = String(fade);
+        item.style.filter = `blur(${blur}px)`;
       });
     }
 
@@ -121,6 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   setupTrail();
+  updateHeroMove();
   updateScene();
 
   // Scroll con rAF para no saturar
@@ -136,6 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('resize', () => {
     setupTrail();
+    updateHeroMove();
     updateScene();
   });
 });

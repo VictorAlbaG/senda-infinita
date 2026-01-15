@@ -6,12 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <link rel="stylesheet" href="/css/app.css">
-  <link rel="stylesheet" href="../styles/tailwind.css">
 </head>
-<body class="min-h-screen bg-[linear-gradient(135deg,_#A7D3E6_0%,_#A5B86C_50%,_#6BAA3D_100%)] text-[#1E4C6D]">
+<body class="min-h-screen bg-[radial-gradient(_#E0E0E0_0%,_#E0E0E0_62%,_#7AAB4F_100%)] text-[#1E4C6D]">
   <div id="header-placeholder"></div>
 
-  <section id="hero-scene" style="height: 200vh;">
+  <section id="hero-scene">
     <div id="hero">
       <div id="hero-image"></div>
       <div id="cloud-layer2" class="cloud-parallax" data-side="right" data-offset="0" data-rise="0"></div>
@@ -55,7 +54,7 @@
 
       <div id="hero-overlay"></div>
 
-      <div style="position: relative; height: 100%; display: flex; align-items: center; justify-content: center;">
+      <div class="hero-copy">
         <div style="text-align: center; color: #ffffff; padding: 0 24px;">
           <div style="font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase;">Cantabria</div>
           <h1 id="hero-title" style="letter-spacing: 0.2em; font-weight: 500; text-shadow: 0px 6px 13px #000000, 0px -8px 17px #000000, 0px 0px 6px #000000;">Senda Infinita</h1>
@@ -79,7 +78,10 @@
 
   <div id="home-content" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Hero + filtros -->
-    <section class="rounded-2xl border border-[#7C7C6B]/40 bg-[#A7D3E6]/70 p-6 shadow-sm sm:p-8">
+    <div class="topo-wrap relative isolate">
+
+    <section class="topo-panel rounded-2xl border border-[#7C7C6B]/40 bg-[#A7D3E6]/70 p-6 p-6 shadow-[inset_0_2px_8px_rgba(0,0,0,0.18),inset_0_-1px_3px_rgba(255,255,255,0.25)] sm:p-8">
+
       <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Explora rutas en Cantabria</h1>
       <p class="mt-2 text-[#1E4C6D]/80">Filtra por nombre, descripción o dificultad.</p>
 
@@ -118,13 +120,18 @@
 
     <!-- Listado de rutas -->
     <main class="py-4">
-      <section class="rounded-2xl border border-[#7C7C6B]/40 bg-[#A5B86C]/50 p-6 shadow-sm">
+      <section class="topo-panel rounded-2xl bg-[#bde8f7]/70 border border-[#6BAA3D]/25 backdrop-blur p-6 shadow-[inset_0_2px_8px_rgba(0,0,0,0.18),inset_0_-1px_3px_rgba(255,255,255,0.25)]">
+
+
+
         <h2 class="text-2xl font-semibold">Rutas</h2>
         <div id="routes-container" class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <!-- Tarjetas de rutas desde main.js -->
         </div>
       </section>
     </main>
+    </div>
+
 
     <!-- Paginación -->
     <section id="pagination" class="mt-6 flex items-center justify-center gap-4">
