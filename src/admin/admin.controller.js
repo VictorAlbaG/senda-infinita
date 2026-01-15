@@ -1,5 +1,7 @@
 const prisma = require('../config/prisma');
 const slugify = require('../utils/slugify');
+const fs = require('fs');
+const path = require('path');
 
 const allowedRoles = ['USER', 'ADMIN'];
 const allowedDifficulties = ['EASY', 'MODERATE', 'HARD'];
@@ -77,7 +79,7 @@ async function deleteUser(req, res) {
   try {
     const userId = parseInt(req.params.id, 10);
     if (Number.isNaN(userId)) {
-      return res.status(400).json({ message: 'userId invalido' });
+      return res.status(400).json({ message: 'userId inválido' });
     }
 
     if (req.user && req.user.id === userId) {
@@ -153,88 +155,11 @@ async function listRoutes(req, res) {
   }
 }
 
-async function createRoute(req, res) {
-  try {
-    const {
-      title,
-      description,
-      difficulty,
-      distanceKm,
-      ascentM,
-      startLat,
-      startLng,
-      endLat,
-      endLng,
-    } = req.body || {};
-
-    if (!title || !difficulty) {
-      return res.status(400).json({ message: 'title y difficulty son obligatorios' });
-    }
-
-    if (!allowedDifficulties.includes(difficulty)) {
-      return res.status(400).json({
-        message: `difficulty debe ser uno de: ${allowedDifficulties.join(', ')}`,
-      });
-    }
-
-    const slug = slugify(title);
-    const existing = await prisma.route.findUnique({ where: { slug } });
-    if (existing) {
-      return res.status(409).json({ message: 'Ya existe una ruta con ese titulo' });
-    }
-
-    const parsedDistance = parseOptionalFloat(distanceKm);
-    if (Number.isNaN(parsedDistance)) {
-      return res.status(400).json({ message: 'distanceKm debe ser un numero' });
-    }
-
-    const parsedAscent = parseOptionalInt(ascentM);
-    if (Number.isNaN(parsedAscent)) {
-      return res.status(400).json({ message: 'ascentM debe ser un numero' });
-    }
-
-    const parsedStartLat = parseOptionalFloat(startLat);
-    const parsedStartLng = parseOptionalFloat(startLng);
-    const parsedEndLat = parseOptionalFloat(endLat);
-    const parsedEndLng = parseOptionalFloat(endLng);
-
-    if (
-      Number.isNaN(parsedStartLat) ||
-      Number.isNaN(parsedStartLng) ||
-      Number.isNaN(parsedEndLat) ||
-      Number.isNaN(parsedEndLng)
-    ) {
-      return res.status(400).json({ message: 'Coordenadas invalidas' });
-    }
-
-    const route = await prisma.route.create({
-      data: {
-        title,
-        slug,
-        description: description || null,
-        difficulty,
-        distanceKm: parsedDistance,
-        ascentM: parsedAscent,
-        startLat: parsedStartLat,
-        startLng: parsedStartLng,
-        endLat: parsedEndLat,
-        endLng: parsedEndLng,
-        source: 'MANUAL',
-      },
-    });
-
-    return res.status(201).json({ message: 'Ruta creada', route });
-  } catch (error) {
-    console.error('Error al crear ruta:', error);
-    return res.status(500).json({ message: 'Error al crear ruta' });
-  }
-}
-
 async function updateRoute(req, res) {
   try {
     const routeId = parseInt(req.params.id, 10);
     if (Number.isNaN(routeId)) {
-      return res.status(400).json({ message: 'routeId invalido' });
+      return res.status(400).json({ message: 'routeId inválido' });
     }
 
     const existing = await prisma.route.findUnique({ where: { id: routeId } });
@@ -260,7 +185,7 @@ async function updateRoute(req, res) {
       const newSlug = slugify(title);
       const slugExists = await prisma.route.findUnique({ where: { slug: newSlug } });
       if (slugExists && slugExists.id !== routeId) {
-        return res.status(409).json({ message: 'El titulo genera un slug ya existente' });
+        return res.status(409).json({ message: 'El título genera un slug ya existente' });
       }
       data.title = title;
       data.slug = newSlug;
@@ -282,7 +207,7 @@ async function updateRoute(req, res) {
     if (distanceKm !== undefined) {
       const parsed = parseOptionalFloat(distanceKm);
       if (Number.isNaN(parsed)) {
-        return res.status(400).json({ message: 'distanceKm debe ser un numero' });
+        return res.status(400).json({ message: 'distanceKm debe ser un número' });
       }
       data.distanceKm = parsed;
     }
@@ -290,7 +215,7 @@ async function updateRoute(req, res) {
     if (ascentM !== undefined) {
       const parsed = parseOptionalInt(ascentM);
       if (Number.isNaN(parsed)) {
-        return res.status(400).json({ message: 'ascentM debe ser un numero' });
+        return res.status(400).json({ message: 'ascentM debe ser un número' });
       }
       data.ascentM = parsed;
     }
@@ -298,7 +223,7 @@ async function updateRoute(req, res) {
     if (startLat !== undefined) {
       const parsed = parseOptionalFloat(startLat);
       if (Number.isNaN(parsed)) {
-        return res.status(400).json({ message: 'startLat invalido' });
+        return res.status(400).json({ message: 'startLat inválido' });
       }
       data.startLat = parsed;
     }
@@ -306,7 +231,7 @@ async function updateRoute(req, res) {
     if (startLng !== undefined) {
       const parsed = parseOptionalFloat(startLng);
       if (Number.isNaN(parsed)) {
-        return res.status(400).json({ message: 'startLng invalido' });
+        return res.status(400).json({ message: 'startLng inválido' });
       }
       data.startLng = parsed;
     }
@@ -314,7 +239,7 @@ async function updateRoute(req, res) {
     if (endLat !== undefined) {
       const parsed = parseOptionalFloat(endLat);
       if (Number.isNaN(parsed)) {
-        return res.status(400).json({ message: 'endLat invalido' });
+        return res.status(400).json({ message: 'endLat inválido' });
       }
       data.endLat = parsed;
     }
@@ -322,7 +247,7 @@ async function updateRoute(req, res) {
     if (endLng !== undefined) {
       const parsed = parseOptionalFloat(endLng);
       if (Number.isNaN(parsed)) {
-        return res.status(400).json({ message: 'endLng invalido' });
+        return res.status(400).json({ message: 'endLng inválido' });
       }
       data.endLng = parsed;
     }
@@ -347,7 +272,7 @@ async function deleteRoute(req, res) {
   try {
     const routeId = parseInt(req.params.id, 10);
     if (Number.isNaN(routeId)) {
-      return res.status(400).json({ message: 'routeId invalido' });
+      return res.status(400).json({ message: 'routeId inválido' });
     }
 
     const route = await prisma.route.findUnique({ where: { id: routeId } });
@@ -365,8 +290,59 @@ async function deleteRoute(req, res) {
 
     return res.json({ message: 'Ruta eliminada correctamente' });
   } catch (error) {
-    console.error('Error al eliminar ruta:', error);
-    return res.status(500).json({ message: 'Error al eliminar ruta' });
+    console.error('Error al eliminar la ruta:', error);
+    return res.status(500).json({ message: 'Error al eliminar la ruta' });
+  }
+}
+
+async function listPhotos(req, res) {
+  try {
+    const photos = await prisma.photo.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+        route: { select: { id: true, title: true, slug: true } },
+      },
+    });
+
+    return res.json({ data: photos });
+  } catch (error) {
+    console.error('Error al listar fotos:', error);
+    return res.status(500).json({ message: 'Error al listar fotos' });
+  }
+}
+
+async function deletePhoto(req, res) {
+  try {
+    const photoId = parseInt(req.params.id, 10);
+    if (Number.isNaN(photoId)) {
+      return res.status(400).json({ message: 'photoId inválido' });
+    }
+
+    const photo = await prisma.photo.findUnique({ where: { id: photoId } });
+    if (!photo) {
+      return res.status(404).json({ message: 'Foto no encontrada' });
+    }
+
+    await prisma.photo.delete({ where: { id: photoId } });
+
+    if (photo.url && photo.url.startsWith('/uploads/')) {
+      const filename = path.basename(photo.url);
+      const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
+      const fullPath = path.join(uploadsDir, filename);
+      try {
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+        }
+      } catch (error) {
+        console.error('No se pudo eliminar el archivo de la foto:', error);
+      }
+    }
+
+    return res.json({ message: 'Foto eliminada correctamente' });
+  } catch (error) {
+    console.error('Error al eliminar la foto:', error);
+    return res.status(500).json({ message: 'Error al eliminar la foto' });
   }
 }
 
@@ -377,7 +353,8 @@ module.exports = {
   listReviews,
   deleteReview,
   listRoutes,
-  createRoute,
   updateRoute,
   deleteRoute,
+  listPhotos,
+  deletePhoto,
 };

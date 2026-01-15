@@ -156,14 +156,14 @@ function renderPagination(pagination) {
 
   state.page = page;
 
-  if (totalPages <= 0) {
+  if (totalPages <= 1) {
     paginationSection.style.display = "none";
     return;
   }
 
   paginationSection.style.display = "block";
 
-  prevPageBtn.disabled = page <= 0;
+  prevPageBtn.disabled = page <= 1;
   nextPageBtn.disabled = page >= totalPages;
 
   paginationInfo.textContent = `Página ${page} de ${totalPages} (total rutas: ${total})`;

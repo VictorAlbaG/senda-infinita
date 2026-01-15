@@ -100,32 +100,16 @@
       <div id="reviews-container" class="mt-4"></div>
     </section>
 
+    <section class="admin-section">
+      <h2 class="text-xl font-semibold">Fotos</h2>
+      <div id="photos-container" class="mt-4"></div>
+    </section>
+
     <section class="admin-section space-y-6">
       <div>
         <h2 class="text-xl font-semibold">Rutas</h2>
-        <p class="text-sm text-slate-600">Crea, edita o elimina rutas manuales.</p>
+        <p class="text-sm text-slate-600">Importa rutas usando OpenRouteService (ORS).</p>
       </div>
-
-      <form id="route-create-form" class="admin-card admin-grid admin-grid-3">
-        <input class="admin-input" type="text" name="title" placeholder="Titulo" required />
-        <select class="admin-input" name="difficulty" required>
-          <option value="">Dificultad</option>
-          <option value="EASY">FÁCIL</option>
-          <option value="MODERATE">MODERADO</option>
-          <option value="HARD">DIFÍCIL</option>
-        </select>
-        <input class="admin-input" type="text" name="description" placeholder="Descripcion" />
-        <input class="admin-input" type="number" step="0.1" name="distanceKm" placeholder="Distancia (km)" />
-        <input class="admin-input" type="number" step="1" name="ascentM" placeholder="Desnivel (m)" />
-        <input class="admin-input" type="number" step="0.000001" name="startLat" placeholder="Start lat" />
-        <input class="admin-input" type="number" step="0.000001" name="startLng" placeholder="Start lng" />
-        <input class="admin-input" type="number" step="0.000001" name="endLat" placeholder="End lat" />
-        <input class="admin-input" type="number" step="0.000001" name="endLng" placeholder="End lng" />
-        <div class="flex items-center gap-3">
-          <button class="admin-button" type="submit">Crear ruta</button>
-          <span id="route-create-message" class="text-sm text-slate-600"></span>
-        </div>
-      </form>
 
       <form id="route-import-form" class="admin-card admin-grid admin-grid-3">
         <input class="admin-input" type="text" name="title" placeholder="Titulo para ORS" required />

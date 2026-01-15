@@ -39,6 +39,7 @@ model User {
   reviews   Review[]
   favorites Favorite[]
   photos    Photo[]
+@@map("user")
 }
 
 model Route {
@@ -63,6 +64,7 @@ model Route {
   reviews      Review[]
   favorites    Favorite[]
   photos       Photo[]
+@@map("route")
 }
 
 model Waypoint {
@@ -77,6 +79,7 @@ model Waypoint {
 
   @@index([routeId])
   @@unique([routeId, order])
+@@map("waypoint")
 }
 
 model Review {
@@ -94,6 +97,7 @@ model Review {
   @@index([routeId])
   // Un usuario solo puede dejar una review por ruta
   @@unique([userId, routeId])
+@@map("review")
 }
 
 model Favorite {
@@ -109,6 +113,7 @@ model Favorite {
   @@index([routeId])
   // Un favorito por usuario y ruta
   @@unique([userId, routeId])
+@@map("favorite")
 }
 
 model Photo {
@@ -124,4 +129,5 @@ model Photo {
 
   @@index([routeId])
   @@index([userId])
+@@map("photo")
 }

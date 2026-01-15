@@ -51,11 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const createForm = document.getElementById('route-create-form');
-  if (createForm) {
-    createForm.addEventListener('submit', onCreateRoute);
-  }
-
   const importForm = document.getElementById('route-import-form');
   if (importForm) {
     importForm.addEventListener('submit', onImportRoute);
@@ -63,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const usersContainer = document.getElementById('users-container');
   const reviewsContainer = document.getElementById('reviews-container');
+  const photosContainer = document.getElementById('photos-container');
   const routesContainer = document.getElementById('routes-container');
 
   if (usersContainer) {
@@ -71,6 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (reviewsContainer) {
     reviewsContainer.addEventListener('click', onReviewAction);
+  }
+
+  if (photosContainer) {
+    photosContainer.addEventListener('click', onPhotoAction);
   }
 
   if (routesContainer) {
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadAll() {
   setStatus('Cargando panel...', false);
-  await Promise.all([loadUsers(), loadReviews(), loadRoutes()]);
+  await Promise.all([loadUsers(), loadReviews(), loadPhotos(), loadRoutes()]);
   setStatus('', false);
 }
 
@@ -219,6 +219,7 @@ async function onUserAction(event) {
 
       await loadUsers();
       await loadReviews();
+      await loadPhotos();
     } catch (error) {
       console.error('Error al eliminar usuario:', error);
       setStatus(error.message || 'No se pudo eliminar el usuario.', true);
@@ -326,6 +327,116 @@ async function onReviewAction(event) {
   } catch (error) {
     console.error('Error al eliminar review:', error);
     setStatus(error.message || 'No se pudo eliminar la review.', true);
+  }
+}
+
+async function loadPhotos() {
+  const container = document.getElementById('photos-container');
+  if (!container) return;
+
+  container.textContent = 'Cargando fotos...';
+
+  try {
+    const response = await fetch(`${API_ADMIN_BASE}/photos`, {
+      headers: authHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP ${response.status}`);
+    }
+
+    const result = await response.json();
+    const photos = result.data || [];
+
+    if (photos.length === 0) {
+      container.textContent = 'No hay fotos.';
+      return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'admin-table';
+
+    const header = document.createElement('tr');
+    ['Foto', 'Ruta', 'Usuario', 'Fecha', 'Acciones'].forEach((text) => {
+      const th = document.createElement('th');
+      th.textContent = text;
+      header.appendChild(th);
+    });
+    table.appendChild(header);
+
+    photos.forEach((photo) => {
+      const row = document.createElement('tr');
+
+      const photoCell = document.createElement('td');
+      const img = document.createElement('img');
+      img.src = photo.url;
+      img.alt = 'Foto';
+      img.style.width = '96px';
+      img.style.height = '64px';
+      img.style.objectFit = 'cover';
+      img.loading = 'lazy';
+      photoCell.appendChild(img);
+
+      const routeCell = document.createElement('td');
+      routeCell.textContent = photo.route?.title || 'Ruta';
+
+      const userCell = document.createElement('td');
+      userCell.textContent = photo.user?.name || photo.user?.email || 'Usuario';
+
+      const dateCell = document.createElement('td');
+      dateCell.textContent = new Date(photo.createdAt).toLocaleDateString('es-ES');
+
+      const actionsCell = document.createElement('td');
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'admin-button danger';
+      deleteBtn.dataset.action = 'delete-photo';
+      deleteBtn.dataset.id = String(photo.id);
+      deleteBtn.textContent = 'Eliminar';
+      actionsCell.appendChild(deleteBtn);
+
+      row.appendChild(photoCell);
+      row.appendChild(routeCell);
+      row.appendChild(userCell);
+      row.appendChild(dateCell);
+      row.appendChild(actionsCell);
+
+      table.appendChild(row);
+    });
+
+    container.innerHTML = '';
+    container.appendChild(table);
+  } catch (error) {
+    console.error('Error al cargar las fotos:', error);
+    container.textContent = 'No se han podido cargar las fotos.';
+  }
+}
+
+async function onPhotoAction(event) {
+  const button = event.target.closest('button');
+  if (!button) return;
+
+  const action = button.dataset.action;
+  const photoId = button.dataset.id;
+  if (action !== 'delete-photo' || !photoId) return;
+
+  const confirmed = window.confirm('¿Eliminar esta foto?');
+  if (!confirmed) return;
+
+  try {
+    const response = await fetch(`${API_ADMIN_BASE}/photos/${photoId}`, {
+      method: 'DELETE',
+      headers: authHeaders(),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Error HTTP ${response.status}`);
+    }
+
+    await loadPhotos();
+  } catch (error) {
+    console.error('Error al eliminar la foto:', error);
+    setStatus(error.message || 'No se pudo eliminar la foto.', true);
   }
 }
 
@@ -441,6 +552,7 @@ async function onRouteAction(event) {
 
       await loadRoutes();
       await loadReviews();
+      await loadPhotos();
     } catch (error) {
       console.error('Error al eliminar ruta:', error);
       setStatus(error.message || 'No se pudo eliminar la ruta.', true);
@@ -462,45 +574,6 @@ function readRoutePayload(card) {
     endLat: normalizeNumber(getValue('endLat')),
     endLng: normalizeNumber(getValue('endLng')),
   };
-}
-
-async function onCreateRoute(event) {
-  event.preventDefault();
-  const form = event.target;
-  const message = document.getElementById('route-create-message');
-
-  const payload = Object.fromEntries(new FormData(form).entries());
-  payload.distanceKm = normalizeNumber(payload.distanceKm);
-  payload.ascentM = normalizeNumber(payload.ascentM);
-  payload.startLat = normalizeNumber(payload.startLat);
-  payload.startLng = normalizeNumber(payload.startLng);
-  payload.endLat = normalizeNumber(payload.endLat);
-  payload.endLng = normalizeNumber(payload.endLng);
-
-  if (message) message.textContent = 'Creando ruta...';
-
-  try {
-    const response = await fetch(`${API_ADMIN_BASE}/routes`, {
-      method: 'POST',
-      headers: {
-        ...authHeaders(),
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Error HTTP ${response.status}`);
-    }
-
-    form.reset();
-    if (message) message.textContent = 'Ruta creada.';
-    await loadRoutes();
-  } catch (error) {
-    console.error('Error al crear ruta:', error);
-    if (message) message.textContent = error.message || 'No se pudo crear la ruta.';
-  }
 }
 
 async function onImportRoute(event) {
